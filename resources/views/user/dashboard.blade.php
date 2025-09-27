@@ -1,7 +1,12 @@
 @extends('layouts.app')
 
 @section('title', 'Dashboard User')
-
+<style>
+@keyframes moveBg {
+  from { background-position: 0 0; }
+  to { background-position: 1000px 1000px; }
+}
+</style>
 @section('content')
 <div class="bg-white pt-24 ">
     <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 items-center gap-10 px-12 py-10">
@@ -24,7 +29,6 @@
 </div>
 
 
-        <!-- Right Illustration -->
        <!-- Right Illustration -->
 <div class="flex justify-center md:justify-end items-end">
     <img src="{{ asset('asset/iq ilustrasi.png') }}" 
@@ -35,8 +39,13 @@
 </div>
 
 <!-- Section Kuiz -->
-<div class="bg-gray-50 py-16">
-  <div class="max-w-7xl mx-auto px-6 lg:px-12">
+<div class="relative bg-white py-16 overflow-hidden">
+  <!-- Background Animasi Puzzle -->
+  <div class="absolute inset-0 opacity-20">
+    <div class="w-full h-full bg-[url('https://t3.ftcdn.net/jpg/06/33/05/36/360_F_633053680_ykV9DREuXPgJLUj9hbtVdOZQzigWtKZZ.jpg')] opacity-5 animate-[moveBg_30s_linear_infinite]"></div>
+  </div>
+
+  <div class="relative max-w-7xl mx-auto px-6 lg:px-12">
     <!-- Heading -->
     <div class="text-center mb-14" data-aos="fade-up">
       <h1 class="text-4xl font-bold text-gray-800 mb-4">Selamat Pagi, User !</h1>
@@ -51,7 +60,7 @@
 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
   
   <!-- Learning Style -->
-  <div class="bg-white rounded-2xl shadow-md hover:shadow-2xl p-6 
+  <div class="bg-white rounded-2xl border border-gray-200 shadow-md hover:shadow-2xl p-6 
               transition transform hover:-translate-y-1 duration-300 
               flex flex-col justify-between" data-aos="fade-right">
     <div>
@@ -79,7 +88,7 @@
   </div>
 
   <!-- HMT -->
-  <div class="bg-white rounded-2xl shadow-md hover:shadow-2xl p-6 
+  <div class="bg-white rounded-2xl border border-gray-200 shadow-md hover:shadow-2xl p-6 
               transition transform hover:-translate-y-1 duration-300 
               flex flex-col justify-between" data-aos="fade-left">
     <div>

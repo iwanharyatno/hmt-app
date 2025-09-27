@@ -54,15 +54,15 @@
                     </p>
                     <ul class="space-y-3 text-gray-700">
                         <li class="flex items-center gap-3">
-                            <i class="fas fa-envelope text-indigo-600"></i>
+                            <i class="fas fa-envelope text-orange-600"></i>
                             support@iqtestapp.com
                         </li>
                         <li class="flex items-center gap-3">
-                            <i class="fas fa-phone-alt text-indigo-600"></i>
+                            <i class="fas fa-phone-alt text-orange-600"></i>
                             +62 812 3456 7890
                         </li>
                         <li class="flex items-center gap-3">
-                            <i class="fas fa-map-marker-alt text-indigo-600"></i>
+                            <i class="fas fa-map-marker-alt text-orange-600"></i>
                             Jl. Mawar No. 123, Jakarta, Indonesia
                         </li>
                     </ul>
@@ -71,7 +71,7 @@
                 <!-- Map -->
                 <div class="rounded-xl overflow-hidden shadow-lg">
                     <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.7322249362183!2d106.82715367475418!3d-6.167416960437717!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f46c1f5dd47f%3A0x8fdbf6e9ef4fb3d9!2sMonas!5e0!3m2!1sen!2sid!4v1678627111111"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3956.581080415573!2d109.2314225!3d-7.4007460000000025!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e655ef25207e1e1%3A0xcedb82ef04ed7e7c!2sUniversitas%20Amikom%20Purwokerto!5e0!3m2!1sid!2sid!4v1758988455469!5m2!1sid!2sid"
                         width="100%" height="250" style="border:0;" allowfullscreen="" loading="lazy">
                     </iframe>
                 </div>
