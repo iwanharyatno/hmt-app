@@ -39,7 +39,7 @@
                     </div>
                     
                     <button type="submit"
-                        class="w-full bg-indigo-600 text-white font-medium px-6 py-3 rounded-lg shadow hover:bg-indigo-700 transition">
+                        class="w-full bg-orange-600 text-white font-medium px-6 py-3 rounded-lg shadow hover:bg-indigo-700 transition">
                         <i class="fas fa-paper-plane"></i> Kirim Pesan
                     </button>
                 </form>
