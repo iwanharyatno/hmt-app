@@ -1,20 +1,28 @@
 @extends('layouts.admin')
 
-@section('title', 'Tambah Soal HMT')
+@section('title', 'Edit Soal HMT')
 
 @section('content')
     <div class="bg-white p-6 rounded-xl shadow-md max-w-3xl mx-auto">
-        <h1 class="text-2xl font-bold text-orange-600 mb-6">Tambah Soal HMT</h1>
+        <h1 class="text-2xl font-bold text-orange-600 mb-6">Edit Soal HMT</h1>
 
-        <form id="hmt-form" action="{{ route('admin.hmt.store') }}" method="POST" enctype="multipart/form-data"
-            class="space-y-6" x-data="{ answers: [0, 1, 2, 3, 4, 5] }">
+        <form id="hmt-form" action="{{ route('admin.hmt.update', $question->id) }}" method="POST"
+            enctype="multipart/form-data" class="space-y-6" x-data="{ answers: Array({{ count($question->answer_paths ?? []) }}).fill(0) }">
             @csrf
+            @method('PUT')
 
             <!-- Upload Gambar Soal -->
             <div>
                 <label class="block text-gray-700 mb-1">Gambar Soal</label>
+                @if ($question->question_path)
+                    <div class="mb-2">
+                        <img src="{{ asset('storage/' . $question->question_path) }}" alt="Soal"
+                            class="w-40 h-auto rounded">
+                    </div>
+                @endif
                 <input type="file" name="question_path"
                     class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-orange-400">
+                <p class="text-xs text-gray-500 mt-1">Kosongkan jika tidak ingin mengganti gambar soal</p>
             </div>
 
             <!-- Upload Gambar Jawaban -->
@@ -24,15 +32,28 @@
                     <template x-for="(item, index) in answers" :key="index">
                         <div class="border p-3 rounded-lg">
                             <label class="block text-gray-600 mb-1">Jawaban <span x-text="index+1"></span></label>
+
+                            <!-- Preview jawaban lama -->
+                            <template
+                                x-if="{{ isset($question->answer_paths) ? 'index < ' . count($question->answer_paths) : 'false' }}">
+                                <div class="mb-2">
+                                    <img src="{{ asset('storage') }}/{{ $question->answer_paths['' + index] ?? '' }}"
+                                        alt="Jawaban" class="w-24 h-auto rounded">
+                                </div>
+                            </template>
+
                             <input type="file" :name="'answer_paths[]'"
                                 class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-orange-400">
+
                             <div class="mt-2 flex items-center">
-                                <input type="radio" name="correct_index" :value="index" class="mr-2">
+                                <input type="radio" name="correct_index" :value="index" class="mr-2"
+                                    {{ $question->correct_index == 'index' ? 'checked' : '' }}>
                                 <span class="text-sm text-gray-600">Tandai sebagai benar</span>
                             </div>
                         </div>
                     </template>
                 </div>
+
                 <div class="mt-3 flex gap-2">
                     <button type="button" @click="answers.push(answers.length)"
                         class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 text-sm">
@@ -49,13 +70,13 @@
             <div class="flex justify-end space-x-3">
                 <a href="{{ route('admin.hmt.index') }}" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Batal</a>
                 <button type="submit"
-                    class="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600">Simpan</button>
+                    class="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600">Update</button>
             </div>
         </form>
     </div>
 @endsection
 
-@push('scripts')
+@section('scripts')
     <script>
         document.getElementById('hmt-form').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -64,7 +85,7 @@
 
             try {
                 const res = await fetch(form.action, {
-                    method: 'POST',
+                    method: 'POST', // karena ada @method('PUT')
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                     },
@@ -74,7 +95,7 @@
                 const data = await res.json();
 
                 if (res.ok && data.success) {
-                    alert(data.message || "Soal berhasil disimpan");
+                    alert(data.message || "Soal berhasil diperbarui");
                     window.location.href = "{{ route('admin.hmt.index') }}";
                 } else {
                     alert("Terjadi kesalahan: " + (data.message || "Unknown error"));
@@ -85,4 +106,4 @@
             }
         });
     </script>
-@endpush
+@endsection
