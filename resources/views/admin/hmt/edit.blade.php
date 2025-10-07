@@ -7,7 +7,7 @@
         <h1 class="text-2xl font-bold text-orange-600 mb-6">Edit Soal HMT</h1>
 
         <form id="hmt-form" action="{{ route('admin.hmt.update', $question->id) }}" method="POST"
-            enctype="multipart/form-data" class="space-y-6" x-data="{ answers: Array({{ count($question->answer_paths ?? []) }}).fill(0) }">
+            enctype="multipart/form-data" class="space-y-6" x-data="{ answers: @js($question->answer_paths ?? []), correctIndex: @js($question->correct_index) }">
             @csrf
             @method('PUT')
 
@@ -31,23 +31,24 @@
                 <div class="grid grid-cols-2 gap-4">
                     <template x-for="(item, index) in answers" :key="index">
                         <div class="border p-3 rounded-lg">
-                            <label class="block text-gray-600 mb-1">Jawaban <span x-text="index+1"></span></label>
+                            <label class="block text-gray-600 mb-1">
+                                Jawaban <span x-text="index + 1"></span>
+                            </label>
 
                             <!-- Preview jawaban lama -->
-                            <template
-                                x-if="{{ isset($question->answer_paths) ? 'index < ' . count($question->answer_paths) : 'false' }}">
-                                <div class="mb-2">
-                                    <img src="{{ asset('storage') }}/{{ $question->answer_paths['' + index] ?? '' }}"
-                                        alt="Jawaban" class="w-24 h-auto rounded">
-                                </div>
-                            </template>
+                            <div class="mb-2" x-show="item">
+                                <img :src="item ? '{{ asset('storage') }}/' + item : ''" alt="Jawaban"
+                                    class="w-24 h-auto rounded">
+                            </div>
 
-                            <input type="file" :name="'answer_paths[]'"
+                            <!-- Input file -->
+                            <input type="file" :name="'answer_paths[' + index + ']'"
                                 class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-orange-400">
 
+                            <!-- Pilih jawaban benar -->
                             <div class="mt-2 flex items-center">
-                                <input type="radio" name="correct_index" :value="index" class="mr-2"
-                                    {{ $question->correct_index == 'index' ? 'checked' : '' }}>
+                                <input type="radio" name="correct_index" :value="index" x-model="correctIndex"
+                                    class="mr-2">
                                 <span class="text-sm text-gray-600">Tandai sebagai benar</span>
                             </div>
                         </div>
@@ -76,7 +77,7 @@
     </div>
 @endsection
 
-@section('scripts')
+@push('scripts')
     <script>
         document.getElementById('hmt-form').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -85,7 +86,7 @@
 
             try {
                 const res = await fetch(form.action, {
-                    method: 'POST', // karena ada @method('PUT')
+                    method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                     },
@@ -96,7 +97,7 @@
 
                 if (res.ok && data.success) {
                     alert(data.message || "Soal berhasil diperbarui");
-                    window.location.href = "{{ route('admin.hmt.index') }}";
+                    window.location.href = @json(route('admin.hmt.index'));
                 } else {
                     alert("Terjadi kesalahan: " + (data.message || "Unknown error"));
                 }
@@ -106,4 +107,4 @@
             }
         });
     </script>
-@endsection
+@endpush

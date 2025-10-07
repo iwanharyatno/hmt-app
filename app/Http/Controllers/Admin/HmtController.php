@@ -7,6 +7,12 @@ use App\Models\HmtQuestion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use App\Exports\HmtHistoriesExport;
+use App\Exports\HmtHistorySingleExport;
+use App\Models\HmtHistory;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class HmtController extends Controller
 {
@@ -163,5 +169,31 @@ class HmtController extends Controller
             'success' => true,
             'message' => 'Soal berhasil dihapus',
         ]);
+    }
+
+    public function history()
+    {
+        $participants = HmtHistory::with('user')->select('user_id', DB::raw('MAX(answered_at) as latest_attempt, MIN(answered_at) as oldest_attempt'))->groupBy('user_id')->get();
+        return view('admin.hmt.history', compact('participants'));
+    }
+
+    public function showAnswer($id)
+    {
+        $history = HmtHistory::with('user', 'question')->where('user_id', $id)->get();
+        $user = User::find($id);
+        return view('admin.hmt.show', compact('history', 'user'));
+    }
+
+    public function exportHistoriesCsv()
+    {
+        $filename = 'hmt_histories_' . now()->format('Ymd_His') . '.csv';
+        return Excel::download(new HmtHistoriesExport, $filename, \Maatwebsite\Excel\Excel::CSV);
+    }
+
+    public function exportHistoriesSingleCsv($userId)
+    {
+        $user = User::find($userId);
+        $filename = 'hmt_history_' . $user->name . '_' . now()->format('Ymd_His') . '.csv';
+        return Excel::download(new HmtHistorySingleExport($userId), $filename, \Maatwebsite\Excel\Excel::CSV);
     }
 }

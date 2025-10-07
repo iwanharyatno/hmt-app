@@ -9,6 +9,8 @@ class HmtHistory extends Model
 {
     use HasFactory;
 
+    public $timestamps = false; // 👈 disable created_at & updated_at
+
     protected $fillable = [
         'question_id',
         'user_id',

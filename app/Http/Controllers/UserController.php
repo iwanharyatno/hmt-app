@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\HmtHistory;
+use App\Models\HmtQuestion;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    
+
     public function dashboard()
     {
         return view('user.dashboard');
@@ -20,12 +22,6 @@ class UserController extends Controller
     public function learningStyle()
     {
         return view('user.quiz.learning-style');
-    }
-
-    // Quiz: HMT
-    public function hmt()
-    {
-        return view('user.quiz.hmt');
     }
 
     // Result

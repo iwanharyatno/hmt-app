@@ -7,7 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-  <meta name="csrf-token" value="{{ csrf_token() }}">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <style>
     body {
       font-family: 'Poppins', sans-serif;
@@ -33,6 +33,9 @@
         </a>
         <a href="{{ route('admin.hmt.index') }}" class="block px-3 py-2 rounded hover:bg-orange-500">
           <i class="fas fa-puzzle-piece mr-2"></i> HMT Quiz
+        </a>
+        <a href="{{ route('admin.hmt.history') }}" class="block px-3 py-2 rounded hover:bg-orange-500">
+          <i class="fas fa-puzzle-piece mr-2"></i> Jawaban HMT
         </a>
         <a href="{{ route('admin.learning-style.index') }}" class="block px-3 py-2 rounded hover:bg-orange-500">
           <i class="fas fa-brain mr-2"></i> Learning Style Quiz

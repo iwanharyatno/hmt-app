@@ -22,8 +22,6 @@
 
 <body class="bg-gray-100 text-gray-900">
 
-    @include('layouts.partials.navbar')
-
     <main class="container mx-auto ">
         @yield('content')
     </main>
