@@ -4,8 +4,9 @@ namespace App\Exports;
 
 use App\Models\HmtHistory;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\WithHeadings;
 
-class HmtHistorySingleExport implements FromCollection
+class HmtHistorySingleExport implements FromCollection, WithHeadings
 {
     private $userId;
 
@@ -28,7 +29,7 @@ class HmtHistorySingleExport implements FromCollection
                     'ID'          => $history->id,
                     'User ID'     => $history->user_id,
                     'User'        => $history->user?->name ?? 'Guest',
-                    'Question'    => $history->question?->id,
+                    'Question ID'    => $history->question?->id,
                     'Answer'      => $history->answer_index,
                     'Correct'     => $history->answer_index == $history->question?->correct_index,
                     'Attempts'    => $history->attempts,
@@ -44,7 +45,7 @@ class HmtHistorySingleExport implements FromCollection
             'ID',
             'User ID',
             'User',
-            'Question',
+            'Question ID',
             'Answer',
             'Correct',
             'Attempts',

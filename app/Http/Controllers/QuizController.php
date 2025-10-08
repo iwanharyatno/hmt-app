@@ -6,6 +6,7 @@ use App\Models\HmtHistory;
 use App\Models\HmtQuestion;
 use App\Models\LearningStyleQuestion;
 use App\Models\LearningStyleResult;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -17,8 +18,13 @@ class QuizController extends Controller
         $questions = LearningStyleQuestion::where('is_active', true)
             ->orderBy('id')
             ->get(['id', 'question', 'answers']);
+        
+        $settings = [
+            Setting::LS_DESCRIPTION => Setting::getValue(Setting::LS_DESCRIPTION, ''),
+            Setting::LS_PRIVACY => Setting::getValue(Setting::LS_PRIVACY, ''),
+        ];
 
-        return view('user.quiz.learning-style', compact('questions'));
+        return view('user.quiz.learning-style', compact('questions', 'settings'));
     }
 
     /**
@@ -35,7 +41,13 @@ class QuizController extends Controller
             return redirect()->route('user.dashboard')->with('error', 'Silakan isi kuisioner Learning Style terlebih dahulu sebelum memulai HMT.');
         }
 
-        $questions = HmtQuestion::all()->map(function ($q) {
+        $settings = [
+            Setting::HMT_DURATION => Setting::getValue(Setting::HMT_DURATION, ''),
+            Setting::HMT_DESCRIPTION => Setting::getValue(Setting::HMT_DESCRIPTION, ''),
+            Setting::HMT_PRIVACY => Setting::getValue(Setting::HMT_PRIVACY, ''),
+        ];
+
+        $questions = HmtQuestion::where('is_active', true)->get()->map(function ($q) {
             return [
                 'id'            => $q->id,
                 'question_path' => Storage::url($q->question_path),
@@ -46,7 +58,7 @@ class QuizController extends Controller
             ];
         });
 
-        return view('user.quiz.hmt', compact('questions'));
+        return view('user.quiz.hmt', compact('questions', 'settings'));
     }
 
     /**

@@ -9,3 +9,103 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+.custom-trix-content {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: #374151; /* gray-700 */
+}
+
+.custom-trix-content p {
+    margin-bottom: 1em;
+    text-align: justify;
+}
+
+.custom-trix-content h1,
+.custom-trix-content h2,
+.custom-trix-content h3 {
+    color: oklch(55.3% 0.195 38.402); /* orange accent */
+    font-weight: 700;
+    margin-top: 1.2em;
+    margin-bottom: 0.6em;
+}
+
+.custom-trix-content h1 { font-size: 1.5rem; }
+.custom-trix-content h2 { font-size: 1.25rem; }
+.custom-trix-content h3 { font-size: 1.1rem; }
+
+.custom-trix-content ul,
+.custom-trix-content ol {
+    margin: 0 0 1em 1.5em;
+    padding: 0;
+}
+
+.custom-trix-content ul {
+    list-style-type: disc !important;
+}
+.custom-trix-content ol {
+    list-style-type: decimal !important;
+}
+
+.custom-trix-content ul li,
+.custom-trix-content ol li {
+    margin-bottom: 0.5em;
+    line-height: 1.6;
+}
+
+.custom-trix-content ul li::marker {
+    color: oklch(55.3% 0.195 38.402);
+}
+
+.custom-trix-content a {
+    color: oklch(55.3% 0.195 38.402);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.2s ease;
+}
+
+.custom-trix-content a:hover {
+    color: oklch(65% 0.195 38.402);
+}
+
+.custom-trix-content blockquote {
+    border-left: 4px solid oklch(55.3% 0.195 38.402);
+    padding-left: 1em;
+    color: #4b5563; /* gray-600 */
+    font-style: italic;
+    margin: 1.2em 0;
+}
+
+.custom-trix-content strong {
+    color: #111827; /* gray-900 */
+}
+
+.custom-trix-content em {
+    color: #1f2937; /* gray-800 */
+}
+
+.custom-trix-content hr {
+    border: none;
+    border-top: 1px solid #e5e7eb;
+    margin: 2em 0;
+}
+
+.custom-trix-content table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1.5em 0;
+}
+
+.custom-trix-content th,
+.custom-trix-content td {
+    border: 1px solid #e5e7eb;
+    padding: 0.5em 0.75em;
+    text-align: left;
+}
+
+.custom-trix-content th {
+    background-color: #fff7ed; /* orange-50 */
+    color: oklch(55.3% 0.195 38.402);
+    font-weight: 600;
+}

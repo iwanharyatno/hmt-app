@@ -25,7 +25,8 @@
             <table class="w-full text-sm">
                 <thead class="bg-orange-100 text-orange-700">
                     <tr>
-                        <th class="py-3 px-4 text-left">No</th>
+                        <th class="py-3 px-4 text-left">#</th>
+                        <th class="py-3 px-4 text-left">Kode Pertanyaan</th>
                         <th class="py-3 px-4 text-left">Pertanyaan</th>
                         <th class="py-3 px-4 text-left">Jawaban</th>
                         <th class="py-3 px-4 text-left"><em>Timestamp</em></th>
@@ -35,6 +36,7 @@
                     @foreach ($history as $i => $q)
                         <tr class="border-t hover:bg-orange-50" x-data="{ showConfirm: false }">
                             <td class="py-3 px-4">{{ $i + 1 }}</td>
+                            <td class="py-3 px-4">{{ $q->question->id }}</td>
                             <td class="py-3 px-4">
                                 @if ($q->question->question_path)
                                     <img src="{{ Storage::url($q->question->question_path) }}" alt="Soal"

@@ -3,23 +3,57 @@
 @section('title', 'Kuis HMT')
 
 @section('content')
-    <div class="bg-white h-full items-center flex absolute top-0 left-0 w-full" x-data="quiz({{ $questions->toJson() }})">
+    <div class="bg-white h-full items-center flex absolute top-0 left-0 w-full" x-data="quiz({{ $questions->toJson() }}, {{ json_encode($settings[\App\Models\Setting::HMT_DESCRIPTION]) }}, {{ json_encode($settings[\App\Models\Setting::HMT_PRIVACY]) }})">
+
         <div class="max-w-4xl grow mx-auto px-6 lg:px-12">
+
+            <!-- =======================
+                     PREFACE / INTRO
+                ======================= -->
             <template x-if="showPreface">
-                <div class="shadow-xl p-4">
-                    <h1 class="text-2xl font-bold text-center mb-3">Kuis HMT</h1>
-                    <p class="mb-4">Hagen Matrices Test adalah kuis untuk menguji pola pikir</p>
-                    <button @click="startQuiz()"
-                        class="inline-block px-3 py-1 bg-orange-500 text-white rounded hover:bg-orange-600 transition">
-                        Mulai Test
-                    </button>
+                <div class="shadow-xl p-6 rounded-xl border border-orange-200 bg-white space-y-5">
+                    <h1 class="text-2xl font-bold text-center text-orange-600 mb-3">Kuis HMT (Hagen Matrices Test)</h1>
+                    <div class="custom-trix-content prose max-w-none text-gray-700" x-html="description"></div>
+
+                    <!-- Privacy Agreement -->
+                    <div class="mt-6">
+                        <button type="button" @click="showPrivacy = true"
+                            class="text-orange-600 underline text-sm hover:text-orange-700 transition">
+                            Lihat Kebijakan Privasi
+                        </button>
+
+                        <div class="flex items-center mt-3 gap-2">
+                            <input type="checkbox" id="agreePrivacy" x-model="privacyAgreed"
+                                class="rounded text-orange-600">
+                            <label for="agreePrivacy" class="text-sm text-gray-700">
+                                Saya telah membaca dan menyetujui <span class="text-orange-600 font-medium">Kebijakan
+                                    Privasi</span>.
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Start Button -->
+                    <div class="text-center pt-4">
+                        <button @click="startQuiz()" :disabled="!privacyAgreed"
+                            :class="[
+                                'inline-block px-5 py-2 rounded font-semibold transition',
+                                privacyAgreed ?
+                                'bg-orange-500 hover:bg-orange-600 text-white cursor-pointer' :
+                                'bg-gray-300 text-gray-500 cursor-not-allowed'
+                            ]">
+                            <i class="fas fa-play-circle"></i> Mulai Tes
+                        </button>
+                    </div>
                 </div>
             </template>
-            <!-- Pertanyaan -->
+
+            <!-- =======================
+                     PERTANYAAN
+                ======================= -->
             <template x-if="currentQuestion && !showPreface">
                 <div class="bg-white rounded-2xl shadow-md p-6 mb-8">
                     <h2 class="text-lg text-center font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                        <i class="fas fa-puzzle-piece text-pink-600"></i>
+                        <i class="fas fa-puzzle-piece text-orange-600"></i>
                         Pertanyaan <span x-text="currentIndex + 1"></span> dari <span x-text="questions.length"></span>
                     </h2>
 
@@ -35,8 +69,8 @@
                                 <button type="button" @click="submitAnswer(currentQuestion.id, i)"
                                     :class="['p-3 rounded-lg transition',
                                         selectedAnswer === i ?
-                                        'bg-pink-200 ring-2 ring-pink-500' :
-                                        'bg-gray-100 hover:bg-pink-100'
+                                        'bg-orange-200 ring-2 ring-orange-500' :
+                                        'bg-gray-100 hover:bg-orange-100'
                                     ]">
                                     <img :src="ans" class="mx-auto max-h-32 object-contain">
                                 </button>
@@ -47,35 +81,64 @@
                     <!-- Timer -->
                     <div class="flex justify-center items-center" x-show="currentQuestion">
                         <div class="text-sm text-gray-600 flex items-center gap-2">
-                            <i class="fas fa-clock text-pink-500"></i>
+                            <i class="fas fa-clock text-orange-500"></i>
                             Sisa waktu: <span class="font-semibold" x-text="timeLeft + ' detik'"></span>
                         </div>
                     </div>
                 </div>
             </template>
 
-            <!-- Selesai -->
+            <!-- =======================
+                     SELESAI
+                ======================= -->
             <div x-show="!currentQuestion && !showPreface" class="text-center mt-10">
                 <h2 class="text-2xl font-bold text-green-600">Kuis selesai 🎉</h2>
                 <p class="text-gray-600">Terima kasih sudah mengerjakan.</p>
             </div>
-
         </div>
+
+        <!-- =======================
+                 MODAL PRIVACY POLICY
+            ======================= -->
+        <div x-show="showPrivacy" x-transition class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+            <div @click.outside="showPrivacy = false"
+                class="bg-white rounded-xl shadow-2xl w-full max-w-2xl p-6 relative overflow-y-auto max-h-[80vh]">
+                <button @click="showPrivacy = false" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+                <h3 class="text-lg font-semibold text-orange-600 mb-4">Kebijakan Privasi Kuis HMT</h3>
+                <div class="custom-trix-content prose max-w-none text-gray-700" x-html="privacy"></div>
+                <div class="text-right mt-4">
+                    <button @click="showPrivacy = false"
+                        class="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition">
+                        Tutup
+                    </button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        function quiz(questions) {
+        function quiz(questions, hmtDesc, hmtPrivacy) {
             return {
-                questions: questions,
+                questions,
+                description: hmtDesc,
+                privacy: hmtPrivacy,
                 currentIndex: 0,
                 currentQuestion: null,
                 showPreface: true,
+                showPrivacy: false,
+                showAnswers: false,
+                privacyAgreed: false,
+                totalTime: Number('{{ $settings[\App\Models\Setting::HMT_DURATION] }}'),
                 timeLeft: 30,
                 timer: null,
                 showAnswers: false,
                 selectedAnswer: null,
 
                 startQuiz() {
+                    if (!this.privacyAgreed) return;
                     if (this.questions.length > 0) {
                         this.loadQuestion(0);
                     }
@@ -85,14 +148,14 @@
                 loadQuestion(index) {
                     this.currentIndex = index;
                     this.currentQuestion = this.questions[index];
-                    this.timeLeft = 30;
+                    this.timeLeft = Number('{{ $settings[\App\Models\Setting::HMT_DURATION] }}');
                     this.showAnswers = false;
                     this.selectedAnswer = null;
 
                     if (this.timer) clearInterval(this.timer);
                     this.timer = setInterval(() => {
                         this.timeLeft--;
-                        if (this.timeLeft === 15) {
+                        if (this.timeLeft === Math.floor(this.totalTime / 2)) {
                             this.showAnswers = true;
                         }
                         if (this.timeLeft <= 0) {
@@ -116,12 +179,12 @@
                         await fetch("{{ route('quiz.hmt.answer') }}", {
                             method: 'POST',
                             headers: {
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                'X-CSRF-TOKEN': document.querySelector('meta[name=\"csrf-token\"]').content,
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
                                 question_id: questionId,
-                                answer_index: answerIndex,
+                                answer_index: answerIndex
                             })
                         });
                     } catch (err) {
@@ -132,7 +195,3 @@
         }
     </script>
 @endsection
-
-@push('scripts')
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-@endpush

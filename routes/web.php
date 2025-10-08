@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\HmtController;
 use App\Http\Controllers\Admin\LearningStyleController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
@@ -46,6 +47,9 @@ Route::prefix('admin')->middleware('auth', EnsureUserIsAdmin::class)->group(func
     Route::get('hmt/histories/export/{userId}', [HmtController::class, 'exportHistoriesSingleCsv'])
         ->name('admin.hmt.histories.single-export');
     Route::get('hmt/histories/show/{id}', [HmtController::class, 'showAnswer'])->name('admin.hmt.histories.show');
+
+    Route::get('settings', [SettingController::class, 'index'])->name('admin.settings.index');
+    Route::put('settings', [SettingController::class, 'update'])->name('admin.settings.update');
 });
 
 Route::get('/login', [AuthController::class, 'login'])->name('login');

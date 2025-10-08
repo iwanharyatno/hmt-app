@@ -13,6 +13,7 @@ a    body {
       font-family: 'Poppins', sans-serif;
     }
   </style>
+  @stack('styles')
 </head>
 <body class="bg-gray-100">
 
@@ -42,6 +43,9 @@ a    body {
         </a>
         <a href="{{ route('admin.learning-style.history') }}" class="block px-3 py-2 rounded hover:bg-orange-500">
           <i class="fas fa-brain mr-2"></i> Jawaban Learning Style
+        </a>
+        <a href="{{ route('admin.settings.index') }}" class="block px-3 py-2 rounded hover:bg-orange-500">
+          <i class="fas fa-gear mr-2"></i> Pengaturan
         </a>
       </nav>
     </aside>

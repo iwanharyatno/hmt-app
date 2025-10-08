@@ -12,6 +12,7 @@ use App\Exports\HmtHistorySingleExport;
 use App\Models\HmtHistory;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
 
 class HmtController extends Controller
@@ -21,7 +22,7 @@ class HmtController extends Controller
      */
     public function index()
     {
-        $questions = HmtQuestion::orderBy('created_at', 'desc')->get();
+        $questions = HmtQuestion::orderBy('created_at', 'asc')->get();
         return view('admin.hmt.index', compact('questions'));
     }
 
@@ -72,6 +73,7 @@ class HmtController extends Controller
             'question_path' => $questionPath,
             'answer_paths'  => $answerPaths,
             'correct_index' => $request->correct_index,
+            'is_active' => $request->has('is_active')
         ]);
 
         return response()->json([
@@ -96,6 +98,7 @@ class HmtController extends Controller
      */
     public function update(Request $request, $id)
     {
+        Log::info($request->all());
         $question = HmtQuestion::findOrFail($id);
 
         $request->validate([
@@ -133,8 +136,8 @@ class HmtController extends Controller
             $question->answer_paths = $answerPaths;
         }
 
-        // Update correct index
         $question->correct_index = $request->correct_index;
+        $question->is_active = $request->has('is_active');
 
         $question->save();
 

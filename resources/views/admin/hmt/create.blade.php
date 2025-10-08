@@ -10,6 +10,11 @@
             class="space-y-6" x-data="{ answers: [0, 1, 2, 3, 4, 5] }">
             @csrf
 
+            <div>
+                <input type="checkbox" name="is_active" id="is_active">
+                <label class="text-gray-700 mb-1" for="is_active">Aktif</label>
+            </div>
+
             <!-- Upload Gambar Soal -->
             <div>
                 <label class="block text-gray-700 mb-1">Gambar Soal</label>
