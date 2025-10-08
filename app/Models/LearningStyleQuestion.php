@@ -12,6 +12,7 @@ class LearningStyleQuestion extends Model
     protected $fillable = [
         'question',
         'answers',
+        'is_active'
     ];
 
     protected $casts = [

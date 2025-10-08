@@ -4,18 +4,37 @@ namespace App\Http\Controllers;
 
 use App\Models\HmtHistory;
 use App\Models\HmtQuestion;
+use App\Models\LearningStyleQuestion;
+use App\Models\LearningStyleResult;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class QuizController extends Controller
 {
+    public function learningStyle()
+    {
+        $questions = LearningStyleQuestion::where('is_active', true)
+            ->orderBy('id')
+            ->get(['id', 'question', 'answers']);
+
+        return view('user.quiz.learning-style', compact('questions'));
+    }
+
     /**
      * Halaman awal kuis HMT
      */
-
     public function hmt()
     {
+        $user = Auth::user();
+
+        $user = Auth::user()->load(['learningStyleResults' => fn($q) => $q->latest()->limit(1)]);
+        $latestLearningStyle = $user->learningStyleResults->first();
+
+        if (!$latestLearningStyle) {
+            return redirect()->route('user.dashboard')->with('error', 'Silakan isi kuisioner Learning Style terlebih dahulu sebelum memulai HMT.');
+        }
+
         $questions = HmtQuestion::all()->map(function ($q) {
             return [
                 'id'            => $q->id,

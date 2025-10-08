@@ -1,76 +1,146 @@
 @extends('layouts.admin')
 
-@section('title', 'Learning Style Quiz')
+@section('title', 'Editor Pertanyaan Learning Style')
 
 @section('content')
-<div class="bg-white p-6 rounded-xl shadow-md">
-  <!-- Header -->
-  <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-6 gap-4">
-    <h1 class="text-2xl font-bold text-orange-600">Daftar Pertanyaan Learning Style</h1>
-    <a href="{{ route('admin.learning-style.create') }}" 
-       class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition text-center">
-      <i class="fas fa-plus"></i> Tambah Pertanyaan
-    </a>
-  </div>
-
-  <!-- Table (desktop) -->
-  <div class="hidden sm:block overflow-hidden rounded-lg border border-gray-200">
-    <table class="w-full text-sm md:text-base">
-      <thead class="bg-orange-100 text-orange-700">
-        <tr>
-          <th class="py-3 px-4 text-left">No</th>
-          <th class="py-3 px-4 text-left">Pertanyaan</th>
-          <th class="py-3 px-4 text-left">Aksi</th>
-        </tr>
-      </thead>
-      <tbody class="text-gray-700">
-        @foreach(range(1,5) as $i)
-        <tr class="border-t hover:bg-orange-50">
-          <td class="py-3 px-4">{{ $i }}</td>
-          <td class="py-3 px-4">Contoh pertanyaan learning style ke-{{ $i }}</td>
-          <td class="py-3 px-4 space-x-2">
-            <a href="" 
-               class="inline-block px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition">
-              <i class="fas fa-edit"></i>
-            </a>
-            <form action="" method="POST" class="inline">
-              @csrf
-              @method('DELETE')
-              <button class="inline-block px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition"
-                      onclick="return confirm('Yakin hapus pertanyaan ini?')">
-                <i class="fas fa-trash"></i>
-              </button>
-            </form>
-          </td>
-        </tr>
-        @endforeach
-      </tbody>
-    </table>
-  </div>
-
-  <!-- Card View (mobile) -->
-  <div class="space-y-4 sm:hidden">
-    @foreach(range(1,5) as $i)
-    <div class="border rounded-lg p-4 shadow hover:bg-orange-50">
-      <div class="flex justify-between items-center mb-2">
-        <span class="font-semibold text-orange-600">Pertanyaan {{ $i }}</span>
-        <div class="space-x-2">
-          <a href="" class="inline-block px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition text-sm">
-            <i class="fas fa-edit"></i>
-          </a>
-          <form action="" method="POST" class="inline">
-            @csrf
-            @method('DELETE')
-            <button class="inline-block px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition text-sm"
-                    onclick="return confirm('Yakin hapus pertanyaan ini?')">
-              <i class="fas fa-trash"></i>
+    <div class="bg-white p-6 rounded-xl shadow-md max-w-4xl mx-auto" x-data="questionEditor()" x-init="init()">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold text-orange-600">Editor Pertanyaan Learning Style</h1>
+            <button @click="addQuestion()"
+                class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition">
+                + Tambah Pertanyaan
             </button>
-          </form>
         </div>
-      </div>
-      <p class="text-gray-700">Contoh pertanyaan learning style ke-{{ $i }}</p>
+
+        <template x-for="(q, index) in questions" :key="q.local_id">
+            <div class="border border-gray-200 rounded-lg p-5 mb-5 shadow-sm bg-orange-50 relative">
+                <div class="absolute top-3 right-3 flex gap-2 items-center">
+                    <span class="text-sm text-gray-500" x-text="saving[q.local_id]"></span>
+                    <button @click="deleteQuestion(q)" class="text-red-500 hover:text-red-700">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <label class="flex items-center gap-2 text-sm">
+                        <input type="checkbox" x-model="q.is_active" @change="saveQuestion(q)"
+                            class="rounded border-gray-300 text-orange-500 focus:ring-orange-400">
+                        <span x-text="q.is_active ? 'Aktif' : 'Nonaktif'"></span>
+                    </label>
+                </div>
+
+                <div class="flex items-center justify-between mb-3">
+                    <label class="block font-semibold text-gray-700">Pertanyaan</label>
+                </div>
+
+                <textarea x-model="q.question" @change="saveQuestion(q)"
+                    class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-orange-400" rows="2"></textarea>
+
+                <div class="mt-4">
+                    <label class="block font-semibold text-gray-700 mb-2">Jawaban & Poin</label>
+                    <template x-for="(ans, ai) in q.answers" :key="ai">
+                        <div class="flex items-center gap-3 mb-2">
+                            <input type="text" x-model="ans.text" @change="saveQuestion(q)"
+                                class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-orange-400"
+                                :placeholder="'Jawaban ' + (ai + 1)">
+                            <input type="number" x-model.number="ans.point" @change="saveQuestion(q)"
+                                class="w-24 border rounded-lg p-2 focus:ring-2 focus:ring-orange-400" placeholder="Poin">
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </template>
+
+        <div x-show="questions.length === 0" class="text-gray-500 italic text-center py-10">
+            Belum ada pertanyaan. Klik tombol <b>Tambah Pertanyaan</b> di atas.
+        </div>
     </div>
-    @endforeach
-  </div>
-</div>
+
+    <script>
+        function questionEditor() {
+            return {
+                questions: [],
+                saving: {},
+
+                async init() {
+                    const res = await fetch('{{ route('admin.learning-style.all') }}');
+                    this.questions = await res.json();
+
+                    // Pastikan q.is_active adalah boolean murni
+                    this.questions.forEach(q => {
+                        q.local_id = q.id || Date.now() + Math.random();
+                        q.is_active = Boolean(Number(q.is_active)); // konversi '1'/'0' ke true/false
+                    });
+                },
+
+                addQuestion() {
+                    const q = {
+                        id: null,
+                        local_id: Date.now() + Math.random(),
+                        question: '',
+                        is_active: true,
+                        answers: [{
+                                text: '',
+                                point: 0
+                            },
+                            {
+                                text: '',
+                                point: 0
+                            }
+                        ],
+                    };
+                    this.questions.push(q);
+                },
+
+                async saveQuestion(q) {
+                    this.saving[q.local_id] = '💾 Saving...';
+                    try {
+                        const res = await fetch('{{ route('admin.learning-style.save') }}', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify(q)
+                        });
+                        const data = await res.json();
+                        if (data.success) {
+                            q.id = data.id;
+                            if (data.is_partial) {
+                                this.saving[q.local_id] = 'Saved (incomplete)';
+                            } else {
+                                this.saving[q.local_id] = 'Saved';
+                            }
+                        } else {
+                            this.saving[q.local_id] = 'Error';
+                        }
+                    } catch (e) {
+                        this.saving[q.local_id] = 'Failed';
+                    }
+                },
+
+                async deleteQuestion(q) {
+                    if (!q.id) {
+                        this.questions = this.questions.filter(x => x.local_id !== q.local_id);
+                        return;
+                    }
+
+                    if (!confirm('Yakin ingin menghapus pertanyaan ini?')) return;
+                    try {
+                        await fetch(`/admin/learning-style/delete/${q.id}`, {
+                            method: 'POST',
+                            body: JSON.stringify({
+                                '_method': 'DELETE'
+                            }),
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json'
+                            }
+                        });
+                        this.questions = this.questions.filter(x => x.local_id !== q.local_id);
+                    } catch (e) {
+                        alert('Gagal menghapus pertanyaan');
+                    }
+                },
+            };
+        }
+    </script>
 @endsection

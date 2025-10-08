@@ -9,8 +9,8 @@ return new class extends Migration {
     {
         Schema::create('learning_style_questions', function (Blueprint $table) {
             $table->id();
-            $table->text('question');
-            $table->json('answers'); // array berisi 2 pilihan jawaban
+            $table->text('question')->nullable();
+            $table->json('answers')->nullable(); // array berisi 2 pilihan jawaban
             $table->timestamps();
         });
     }

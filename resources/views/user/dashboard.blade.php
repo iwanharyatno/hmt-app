@@ -50,7 +50,8 @@
             <div class="relative max-w-7xl mx-auto px-6 lg:px-12">
                 <!-- Heading -->
                 <div class="text-center mb-14" data-aos="fade-up">
-                    <h1 class="text-4xl font-bold text-gray-800 mb-4">Selamat Pagi, User !</h1>
+                    <h1 class="text-4xl font-bold text-gray-800 mb-4">Selamat Pagi, <span
+                            class="text-orange-600">{{ Auth::user()->name }}</span>!</h1>
                     <p class="text-gray-600 max-w-2xl mx-auto">
                         Selamat datang di aplikasi <span class="font-semibold text-orange-600">Tes IQ</span>.
                         Silakan pilih kuis yang tersedia untuk mulai perjalananmu 🚀
@@ -61,37 +62,68 @@
 
                     <!-- Learning Style -->
                     <div class="bg-white rounded-2xl border border-gray-200 shadow-md hover:shadow-2xl p-6 
-              transition transform hover:-translate-y-1 duration-300 
-              flex flex-col justify-between"
+    transition transform hover:-translate-y-1 duration-300 flex flex-col justify-between"
                         data-aos="fade-right">
-                        <div>
-                            <div class="flex items-center gap-3 mb-4">
-                                <div class="bg-gray-100 p-3 rounded-xl">
-                                    <i class="fas fa-brain text-orange-600 text-2xl"></i>
+
+                        @if ($latestLearningStyle)
+                            <div>
+                                <div class="flex items-center gap-3 mb-4">
+                                    <div class="bg-gray-100 p-3 rounded-xl">
+                                        <i class="fas fa-brain text-orange-600 text-2xl"></i>
+                                    </div>
+                                    <h2 class="text-xl font-semibold text-gray-800">Kuisioner Learning Style</h2>
                                 </div>
-                                <h2 class="text-xl font-semibold text-gray-800">Kuis Learning Style</h2>
+
+                                <p class="text-gray-600 mb-6">
+                                    Kamu sudah pernah mengikuti kuisioner ini. Berikut hasil sebelumnya:
+                                    <span class="font-medium text-orange-600">
+                                        {{ $latestLearningStyle->result }}
+                                    </span>
+                                    <br>
+                                    <small class="text-gray-500">
+                                        Dikerjakan pada {{ $latestLearningStyle->created_at->translatedFormat('d F Y, H:i') }}
+                                    </small>
+                                </p>
                             </div>
-                            <p class="text-gray-600 mb-6">
-                                Kamu sudah pernah mengikuti kuis ini. Berikut hasil sebelumnya:
-                                <span class="font-medium text-orange-600">Visual Learner</span>
-                            </p>
-                        </div>
-                        <div class="flex gap-3 mt-auto">
-                            <a href="{{ route('user.quiz.learning-style') }}"
-                                class="px-5 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 text-gray-700 text-sm transition flex items-center gap-2">
-                                <i class="fas fa-eye text-gray-500"></i> Lihat Hasil
-                            </a>
-                            <a href="{{ route('user.quiz.hmt') }}"
-                                class="px-5 py-2 bg-orange-600 text-white rounded-lg hover:bg-indigo-700 text-sm transition flex items-center gap-2">
-                                <i class="fas fa-arrow-right"></i> Lanjut ke HMT
-                            </a>
-                        </div>
+
+                            <div class="flex gap-3 mt-auto">
+                                <a href="{{ route('user.quiz.learning-style') }}"
+                                    class="px-5 py-2 bg-gray-100 rounded-lg hover:bg-gray-200 text-gray-700 text-sm transition flex items-center gap-2">
+                                    <i class="fas fa-eye text-gray-500"></i> Lihat Hasil
+                                </a>
+                                <a href="{{ route('user.quiz.hmt') }}"
+                                    class="px-5 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 text-sm transition flex items-center gap-2">
+                                    <i class="fas fa-arrow-right"></i> Lanjut ke HMT
+                                </a>
+                            </div>
+                        @else
+                            {{-- Kalau belum pernah isi --}}
+                            <div>
+                                <div class="flex items-center gap-3 mb-4">
+                                    <div class="bg-gray-100 p-3 rounded-xl">
+                                        <i class="fas fa-brain text-orange-600 text-2xl"></i>
+                                    </div>
+                                    <h2 class="text-xl font-semibold text-gray-800">Kuisioner Learning Style</h2>
+                                </div>
+
+                                <p class="text-gray-600 mb-6">
+                                    Belum pernah mengikuti kuisioner ini. Yuk, cari tahu gaya belajarmu sekarang!
+                                </p>
+                            </div>
+
+                            <div class="mt-auto">
+                                <a href="{{ route('user.quiz.learning-style') }}"
+                                    class="px-5 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 text-sm transition flex items-center gap-2">
+                                    <i class="fas fa-play"></i> Mulai Sekarang
+                                </a>
+                            </div>
+                        @endif
                     </div>
 
                     <!-- HMT -->
                     <div class="bg-white rounded-2xl border border-gray-200 shadow-md hover:shadow-2xl p-6 
-              transition transform hover:-translate-y-1 duration-300 
-              flex flex-col justify-between"
+    transition transform hover:-translate-y-1 duration-300 
+    flex flex-col justify-between"
                         data-aos="fade-left">
                         <div>
                             <div class="flex items-center gap-3 mb-4">
@@ -104,11 +136,19 @@
                                 Tes logika visual dengan batas waktu per soal <span class="font-medium">30 detik</span>.
                             </p>
                         </div>
+
                         <div class="mt-auto">
-                            <a href="{{ route('user.quiz.hmt') }}"
-                                class="px-5 py-2 bg-orange-600 text-white rounded-lg hover:bg-green-500 text-sm transition flex items-center gap-2">
-                                <i class="fas fa-play-circle"></i> Mulai Tes
-                            </a>
+                            @if ($latestLearningStyle)
+                                <a href="{{ route('user.quiz.hmt') }}"
+                                    class="px-5 py-2 bg-orange-600 text-white rounded-lg hover:bg-green-500 text-sm transition flex items-center gap-2">
+                                    <i class="fas fa-play-circle"></i> Mulai Tes
+                                </a>
+                            @else
+                                <button disabled
+                                    class="px-5 py-2 bg-gray-300 text-gray-600 rounded-lg cursor-not-allowed text-sm flex items-center gap-2">
+                                    <i class="fas fa-lock"></i> Selesaikan Kuisioner Dulu
+                                </button>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -170,5 +210,20 @@
             © 2025 IQ Test App. All rights reserved.
         </div>
     </footer>
-
 @endsection
+
+@push('scripts')
+    @if (session('error'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Akses Ditolak',
+                    text: '{{ session('error') }}',
+                    confirmButtonColor: '#f97316', // orange-500
+                    confirmButtonText: 'OK'
+                });
+            });
+        </script>
+    @endif
+@endpush

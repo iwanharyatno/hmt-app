@@ -5,13 +5,20 @@ namespace App\Http\Controllers;
 use App\Models\HmtHistory;
 use App\Models\HmtQuestion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
 
     public function dashboard()
     {
-        return view('user.dashboard');
+        $latestLearningStyle = null;
+        if (Auth::user()) {
+            $user = Auth::user()->load(['learningStyleResults' => fn($q) => $q->latest()->limit(1)]);
+            $latestLearningStyle = $user->learningStyleResults->first();
+        }
+
+        return view('user.dashboard', compact('latestLearningStyle'));
     }
     public function contact()
     {

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\HmtController;
+use App\Http\Controllers\Admin\LearningStyleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
@@ -9,14 +10,16 @@ use App\Http\Controllers\QuizController;
 use App\Http\Middleware\EnsureUserIsAdmin;
 
 Route::get('/', function () {
-    return view('user.dashboard'); // arahkan ke views/user/dashboard.blade.php
+    return redirect()->route('user.dashboard');
 })->name('home');
 
 Route::prefix('user')->group(function () {
     Route::get('/dashboard', [UserController::class, 'dashboard'])->name('user.dashboard');
     Route::get('/contact', [UserController::class, 'contact'])->name('user.contact');
     Route::prefix('quiz')->middleware('auth')->group(function () {
-        Route::get('/learning-style', [UserController::class, 'learningStyle'])->name('user.quiz.learning-style');
+        Route::get('/learning-style', [QuizController::class, 'learningStyle'])->name('user.quiz.learning-style');
+        Route::post('/learning-style/submit', [LearningStyleController::class, 'submit'])
+            ->name('user.learning-style.submit');
         Route::get('/hmt', [QuizController::class, 'hmt'])->name('user.quiz.hmt');
         Route::post('/hmt/answer', [QuizController::class, 'saveHmtAnswer'])->name('quiz.hmt.answer');
     });
@@ -27,8 +30,13 @@ Route::prefix('user')->group(function () {
 Route::prefix('admin')->middleware('auth', EnsureUserIsAdmin::class)->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
-    Route::get('/learning-style', [AdminController::class, 'learningIndex'])->name('admin.learning-style.index');
-    Route::get('/learning-style/create', [AdminController::class, 'learningCreate'])->name('admin.learning-style.create');
+    Route::get('learning-style', [LearningStyleController::class, 'index'])->name('admin.learning-style.index');
+    Route::get('learning-style/editor', [LearningStyleController::class, 'create'])->name('admin.learning-style.editor');
+    Route::get('learning-style/all', [LearningStyleController::class, 'all'])->name('admin.learning-style.all');
+    Route::post('learning-style/save', [LearningStyleController::class, 'save'])->name('admin.learning-style.save');
+    Route::delete('learning-style/delete/{id}', [LearningStyleController::class, 'destroy'])->name('admin.learning-style.destroy');
+    Route::get('learning-style/history', [LearningStyleController::class, 'history'])->name('admin.learning-style.history');
+    Route::get('learning-style/export', [LearningStyleController::class, 'export'])->name('admin.learning-style.export');
 
     Route::resource('hmt', HmtController::class)->except(['show'])->names('admin.hmt');
 
