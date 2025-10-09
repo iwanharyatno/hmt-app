@@ -9,27 +9,26 @@ class HmtHistory extends Model
 {
     use HasFactory;
 
-    public $timestamps = false; // 👈 disable created_at & updated_at
+    public $timestamps = false;
 
     protected $fillable = [
+        'session_id',
         'question_id',
-        'user_id',
         'answer_index',
         'answered_at',
-        'attempts',
     ];
 
     protected $casts = [
         'answered_at' => 'datetime',
     ];
 
+    public function session()
+    {
+        return $this->belongsTo(HmtSession::class, 'session_id');
+    }
+
     public function question()
     {
         return $this->belongsTo(HmtQuestion::class, 'question_id');
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
     }
 }

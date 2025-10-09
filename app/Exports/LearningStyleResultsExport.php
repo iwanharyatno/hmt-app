@@ -23,6 +23,7 @@ class LearningStyleResultsExport implements FromView
             return [
                 'id' => $item->user->id,
                 'user' => $item->user->name,
+                'email' => $item->user->email,
                 'pemrosesan' => $mapped[0],
                 'persepsi' => $mapped[1],
                 'input' => $mapped[2],

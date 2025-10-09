@@ -20,7 +20,7 @@ class AuthController extends Controller
         $data = $request->validated();
 
         if (!Auth::attempt($data)) {
-            return back()->with('error', 'Kredensial tidak ditemukan!');
+            return back()->withInput()->with('error', 'Kredensial tidak ditemukan!');
         }
 
         $user = Auth::user();

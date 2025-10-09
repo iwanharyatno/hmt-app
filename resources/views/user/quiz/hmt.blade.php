@@ -8,7 +8,7 @@
         <div class="max-w-4xl grow mx-auto px-6 lg:px-12">
 
             <!-- =======================
-                     PREFACE / INTRO
+                        PREFACE / INTRO
                 ======================= -->
             <template x-if="showPreface">
                 <div class="shadow-xl p-6 rounded-xl border border-orange-200 bg-white space-y-5">
@@ -34,10 +34,10 @@
 
                     <!-- Start Button -->
                     <div class="text-center pt-4">
-                        <button @click="startQuiz()" :disabled="!privacyAgreed"
+                        <button @click="startQuiz()" :disabled="!privacyAgreed || loading"
                             :class="[
                                 'inline-block px-5 py-2 rounded font-semibold transition',
-                                privacyAgreed ?
+                                privacyAgreed && !loading ?
                                 'bg-orange-500 hover:bg-orange-600 text-white cursor-pointer' :
                                 'bg-gray-300 text-gray-500 cursor-not-allowed'
                             ]">
@@ -48,7 +48,7 @@
             </template>
 
             <!-- =======================
-                     PERTANYAAN
+                        PERTANYAAN
                 ======================= -->
             <template x-if="currentQuestion && !showPreface">
                 <div class="bg-white rounded-2xl shadow-md p-6 mb-8">
@@ -89,16 +89,22 @@
             </template>
 
             <!-- =======================
-                     SELESAI
+                        SELESAI
                 ======================= -->
             <div x-show="!currentQuestion && !showPreface" class="text-center mt-10">
-                <h2 class="text-2xl font-bold text-green-600">Kuis selesai 🎉</h2>
+                <h2 class="text-2xl font-bold text-orange-600">Kuis selesai 🎉</h2>
                 <p class="text-gray-600">Terima kasih sudah mengerjakan.</p>
+                <div class="mt-8">
+                    <button @click="window.location.href='{{ route('user.dashboard') }}'"
+                        class="bg-orange-600 text-white px-6 py-2 rounded-lg hover:bg-orange-700 transition">
+                        Kembali ke Dashboard
+                    </button>
+                </div>
             </div>
         </div>
 
         <!-- =======================
-                 MODAL PRIVACY POLICY
+                MODAL PRIVACY POLICY
             ======================= -->
         <div x-show="showPrivacy" x-transition class="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
             <div @click.outside="showPrivacy = false"
@@ -128,21 +134,45 @@
                 currentIndex: 0,
                 currentQuestion: null,
                 showPreface: true,
-                showPrivacy: false,
                 showAnswers: false,
                 privacyAgreed: false,
-                totalTime: Number('{{ $settings[\App\Models\Setting::HMT_DURATION] }}'),
-                timeLeft: 30,
-                timer: null,
-                showAnswers: false,
+                showPrivacy: false,
                 selectedAnswer: null,
+                timeLeft: Number('{{ $settings[\App\Models\Setting::HMT_DURATION] }}'),
+                totalTime: Number('{{ $settings[\App\Models\Setting::HMT_DURATION] }}'),
+                timer: null,
+                sessionId: null, // ← new
+                loading: false,
 
-                startQuiz() {
-                    if (!this.privacyAgreed) return;
-                    if (this.questions.length > 0) {
-                        this.loadQuestion(0);
+                async startQuiz() {
+                    if (this.loading) return;
+                    this.loading = true;
+
+                    try {
+                        const response = await fetch("{{ route('quiz.hmt.start') }}", {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                'Content-Type': 'application/json',
+                            },
+                        });
+
+                        const data = await response.json();
+
+                        if (response.ok) {
+                            this.sessionId = data.session_id;
+                            this.showPreface = false;
+                            this.loadQuestion(0);
+                        } else {
+                            console.error(data);
+                            Swal.fire('Gagal memulai kuis', data.message || 'Terjadi kesalahan', 'error');
+                        }
+                    } catch (err) {
+                        console.error(err);
+                        Swal.fire('Error', 'Gagal membuat sesi kuis', 'error');
+                    } finally {
+                        this.loading = false;
                     }
-                    this.showPreface = false;
                 },
 
                 loadQuestion(index) {
@@ -164,33 +194,55 @@
                     }, 1000);
                 },
 
-                nextQuestion() {
-                    clearInterval(this.timer);
-                    if (this.currentIndex + 1 < this.questions.length) {
-                        this.loadQuestion(this.currentIndex + 1);
-                    } else {
-                        this.currentQuestion = null;
-                    }
-                },
-
                 async submitAnswer(questionId, answerIndex) {
+                    if (!this.sessionId) return Swal.fire('Error', 'Session belum dimulai.', 'error');
                     this.selectedAnswer = answerIndex;
+
                     try {
                         await fetch("{{ route('quiz.hmt.answer') }}", {
                             method: 'POST',
                             headers: {
-                                'X-CSRF-TOKEN': document.querySelector('meta[name=\"csrf-token\"]').content,
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
+                                session_id: this.sessionId,
                                 question_id: questionId,
-                                answer_index: answerIndex
+                                answer_index: answerIndex,
                             })
                         });
                     } catch (err) {
                         console.error(err);
                     }
-                }
+                },
+
+                nextQuestion() {
+                    clearInterval(this.timer);
+                    if (this.currentIndex + 1 < this.questions.length) {
+                        this.loadQuestion(this.currentIndex + 1);
+                    } else {
+                        this.finishQuiz();
+                    }
+                },
+
+                async finishQuiz() {
+                    clearInterval(this.timer);
+                    try {
+                        await fetch("{{ route('quiz.hmt.finish') }}", {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                session_id: this.sessionId
+                            })
+                        });
+                    } catch (err) {
+                        console.error(err);
+                    }
+                    this.currentQuestion = null;
+                },
             }
         }
     </script>

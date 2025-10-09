@@ -9,7 +9,7 @@ class AdminController extends Controller
     public function dashboard()
     {
         $totalLearningStyle = \App\Models\LearningStyleResult::distinct('user_id')->count('user_id');
-        $totalHmtParticipants = \App\Models\HmtHistory::distinct('user_id')->count('user_id');
+        $totalHmtParticipants = \App\Models\HmtSession::distinct('user_id')->count('user_id');
 
         return view('admin.dashboard', compact('totalLearningStyle', 'totalHmtParticipants'));
     }
@@ -20,15 +20,11 @@ class AdminController extends Controller
     public function learningIndex()
     {
         // ambil data kuis learning style dari database (sementara dummy)
-
-
         return view('admin.learning-style.index');
     }
     public function learningCreate()
     {
         // ambil data kuis learning style dari database (sementara dummy)
-
-
         return view('admin.learning-style.create');
     }
 
@@ -37,14 +33,10 @@ class AdminController extends Controller
      */
     public function hmtIndex()
     {
-
-
         return view('admin.hmt.index');
     }
     public function hmtCreate()
     {
-
-
         return view('admin.hmt.create');
     }
 }

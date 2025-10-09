@@ -85,7 +85,7 @@
                 </button>
             </form>
 
-            <!-- Divider -->
+            {{-- <!-- Divider -->
             <div class="flex items-center my-6">
                 <div class="flex-grow h-px bg-gray-200"></div>
                 <span class="px-4 text-gray-500 text-sm">atau</span>
@@ -102,7 +102,7 @@
                     class="flex-1 py-2 border rounded-lg flex items-center justify-center gap-2 hover:bg-gray-50 transition">
                     <i class="fab fa-facebook text-blue-600"></i> Facebook
                 </button>
-            </div>
+            </div> --}}
 
             <!-- Login Link -->
             <p class="text-center text-sm text-gray-600 mt-6">

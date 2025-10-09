@@ -16,7 +16,7 @@
                     <a href="{{ route('user.quiz.learning-style') }}" class="hover:text-cyan-700">Learning Style</a>
                     <a href="{{ route('user.quiz.hmt') }}" class="hover:text-cyan-700">HMT Test</a>
                 @endauth
-                <a href="{{ route('user.contact') }}" class="hover:text-cyan-700">Contact</a>
+                {{-- <a href="{{ route('user.contact') }}" class="hover:text-cyan-700">Contact</a> --}}
                 @auth
                     <a href="{{ route('logout') }}"
                         class="inline-flex items-center gap-2 outline-1 outline-orange-600 bg-white text-orange-600 font-medium px-6 py-3 rounded-lg shadow hover:bg-orange-600 hover:text-white transition">
@@ -45,7 +45,7 @@
         <a href="{{ route('user.dashboard') }}" class="py-2 hover:bg-gray-100 rounded-md">Home</a>
         <a href="{{ route('user.quiz.learning-style') }}" class="py-2 hover:bg-gray-100 rounded-md">Learning Style</a>
         <a href="{{ route('user.quiz.hmt') }}" class="py-2 hover:bg-gray-100 rounded-md">HMT Test</a>
-        <a href="{{ route('user.contact') }}" class="py-2 hover:bg-gray-100 rounded-md">Contact</a>
+        {{-- <a href="{{ route('user.contact') }}" class="py-2 hover:bg-gray-100 rounded-md">Contact</a> --}}
         <a href="{{ route('login') }}" class="py-2 hover:bg-gray-100 rounded-md flex items-center space-x-2">
             <i class="fas fa-user-circle text-xl"></i>
             <span>Login</span>

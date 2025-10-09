@@ -3,53 +3,67 @@
 namespace App\Exports;
 
 use App\Models\HmtHistory;
+use App\Models\HmtSession;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class HmtHistorySingleExport implements FromCollection, WithHeadings
 {
-    private $userId;
+    private $sessionId;
 
-    function __construct($userId)
+    public function __construct($sessionId)
     {
-        $this->userId = $userId;
+        $this->sessionId = $sessionId;
     }
 
-    /**
-     * @return \Illuminate\Support\Collection
-     */
     public function collection()
     {
-        return HmtHistory::with(['question', 'user'])
-            ->where('user_id', $this->userId)
+        $session = HmtSession::with('user')->findOrFail($this->sessionId);
+        $user = $session->user;
+
+        return HmtHistory::with('question')
+            ->where('session_id', $this->sessionId)
             ->get()
-            ->map(function ($history) {
-                $answeredAt = $history->answered_at;
+            ->map(function ($history) use ($session, $user) {
+                // Pastikan nilai 0 dan false tidak hilang di Excel
+                $answerIndex = $history->answer_index ?? 'NULL';
+                $correctIndex = $history->question?->correct_index ?? 'NULL';
+
+                $answerIndex = ($answerIndex === null) ? 'NULL' : (string) $answerIndex;
+                $correctIndex = ($correctIndex === null) ? 'NULL' : (string) $correctIndex;
+
                 return [
-                    'ID'          => $history->id,
-                    'User ID'     => $history->user_id,
-                    'User'        => $history->user?->name ?? 'Guest',
-                    'Question ID'    => $history->question?->id,
-                    'Answer'      => $history->answer_index,
-                    'Correct'     => $history->answer_index == $history->question?->correct_index,
-                    'Attempts'    => $history->attempts,
-                    'Timestamp'   => $answeredAt ? $answeredAt->getTimestampMs() : null,
+                    'Session ID'       => $history->session_id,
+                    'User ID'          => $user?->id ?? null,
+                    'User'             => $user?->name ?? 'Guest',
+                    'Email'            => $user?->email ?? '-',
+                    'Attempts'         => $session->attempts ?? null,
+                    'Question ID'      => $history->question?->id,
+                    'Answer Index'     => $answerIndex,
+                    'Correct Index'    => $correctIndex,
+                    'Correct?'         => $history->answer_index == $history->question?->correct_index ? 'TRUE' : 'FALSE',
+                    'Answered At'      => $history->answered_at?->format('Y-m-d H:i:s'),
+                    'Session Started'  => $session->started_at?->format('Y-m-d H:i:s'),
+                    'Session Finished' => $session->finished_at?->format('Y-m-d H:i:s'),
                 ];
             });
     }
 
-
     public function headings(): array
     {
         return [
-            'ID',
+            'Session ID',
             'User ID',
             'User',
-            'Question ID',
-            'Answer',
-            'Correct',
+            'Email',
             'Attempts',
-            'Timestamp',
+            'Question ID',
+            'Answer Index',
+            'Correct Index',
+            'Correct?',
+            'Answered At',
+            'Session Started',
+            'Session Finished',
         ];
     }
 }

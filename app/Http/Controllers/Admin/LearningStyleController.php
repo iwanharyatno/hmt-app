@@ -167,7 +167,7 @@ class LearningStyleController extends Controller
                 'user' => $item->user,
                 'result' => $item->result,
                 'mapped' => $mapped,
-                'created_at' => $item->created_at->format('d M Y'),
+                'created_at' => $item->created_at->format('d M Y H:i:s'),
             ];
         });
 

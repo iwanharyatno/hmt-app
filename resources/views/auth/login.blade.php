@@ -54,7 +54,7 @@
             <form action="{{ route('login') }}" method="POST" class="mt-2 space-y-4">
                 @csrf
                 <div>
-                    <input type="email" name="email" placeholder="Email Address" required
+                    <input type="email" name="email" placeholder="Email Address" required value="{{ old('email') }}"
                         class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none text-sm">
                 </div>
 
@@ -74,14 +74,14 @@
             </form>
 
             <!-- Divider -->
-            <div class="flex items-center my-6">
+            {{-- <div class="flex items-center my-6">
                 <div class="flex-grow h-px bg-gray-200"></div>
                 <span class="px-4 text-gray-500 text-sm">atau</span>
                 <div class="flex-grow h-px bg-gray-200"></div>
-            </div>
+            </div> --}}
 
             <!-- Social Login -->
-            <div class="flex gap-3">
+            {{-- <div class="flex gap-3">
                 <button
                     class="flex-1 py-2 border rounded-lg flex items-center justify-center gap-2 hover:bg-gray-50 transition">
                     <i class="fab fa-google text-red-500"></i> Google
@@ -90,7 +90,7 @@
                     class="flex-1 py-2 border rounded-lg flex items-center justify-center gap-2 hover:bg-gray-50 transition">
                     <i class="fab fa-facebook text-blue-600"></i> Facebook
                 </button>
-            </div>
+            </div> --}}
 
             <!-- Register Link -->
             <p class="text-center text-sm text-gray-600 mt-6">

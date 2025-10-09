@@ -15,80 +15,58 @@
             </div>
         </div>
 
-        <!-- Table (desktop) -->
-        <div class="hidden sm:block overflow-hidden rounded-lg border border-gray-200">
+        <div class="overflow-x-auto rounded-lg border border-gray-200">
             <table class="w-full text-sm">
                 <thead class="bg-orange-100 text-orange-700">
                     <tr>
                         <th class="py-3 px-4 text-left">No</th>
                         <th class="py-3 px-4 text-left">User</th>
+                        <th class="py-3 px-4 text-left">Percobaan</th>
+                        <th class="py-3 px-4 text-left">Mulai</th>
+                        <th class="py-3 px-4 text-left">Selesai</th>
+                        <th class="py-3 px-4 text-left">Durasi</th>
                         <th class="py-3 px-4 text-left">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="text-gray-700">
-                    @foreach ($participants as $i => $q)
-                        <tr class="border-t hover:bg-orange-50" x-data="{ showConfirm: false }">
-                            <td class="py-3 px-4">{{ $i + 1 }}</td>
-                            <td class="py-3 px-4">{{ $q->user->name }}</td>
+                    @foreach ($sessions as $i => $session)
+                        <tr class="border-t hover:bg-orange-50">
+                            <td class="py-3 px-4">
+                                {{ $loop->iteration + ($sessions->currentPage() - 1) * $sessions->perPage() }}</td>
+                            <td class="py-3 px-4">{{ $session->user->name ?? '-' }}</td>
+                            <td class="py-3 px-4">{{ $session->attempts ?? '-' }}</td>
+                            <td class="py-3 px-4">{{ $session->started_at?->format('d M Y H:i') ?? '-' }}</td>
+                            <td class="py-3 px-4">{{ $session->finished_at?->format('d M Y H:i') ?? '-' }}</td>
+                            <td class="py-3 px-4">
+                                @if ($session->started_at && $session->finished_at)
+                                    @php
+                                        $start = \Carbon\Carbon::parse($session->started_at);
+                                        $end = \Carbon\Carbon::parse($session->finished_at);
+                                        $duration = $start->diffInMinutes($end);
+                                    @endphp
+                                    {{ $duration }} menit
+                                @else
+                                    -
+                                @endif
+                            </td>
                             <td class="py-3 px-4 space-x-2">
-                                <a href="{{ route('admin.hmt.histories.single-export', $q->user_id) }}"
-                                    class="inline-block px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition">
-                                    <i class="fas fa-file-csv"></i>
-                                </a>
-                                <a href="{{ route('admin.hmt.histories.show', $q->user_id) }}"
+                                <a href="{{ route('admin.hmt.histories.show', $session->id) }}"
                                     class="inline-block px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition">
                                     <i class="fas fa-eye"></i>
                                 </a>
-                                {{-- <button @click="showConfirm = true"
-                                    class="inline-block px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-
-                                <!-- Konfirmasi -->
-                                <div x-show="showConfirm" x-cloak
-                                    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40">
-                                    <div class="bg-white p-6 rounded shadow max-w-sm w-full">
-                                        <p class="text-gray-700 mb-4">Yakin ingin menghapus pertanyaan ini?</p>
-                                        <div class="flex justify-end space-x-3">
-                                            <button @click="showConfirm = false"
-                                                class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">Batal</button>
-                                            <form action="{{ route('admin.hmt.destroy', $q->id) }}" method="POST"
-                                                onsubmit="event.preventDefault(); deleteQuestion(this);">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit"
-                                                    class="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700">Hapus</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div> --}}
+                                <a href="{{ route('admin.hmt.histories.single-export', $session->id) }}"
+                                    class="inline-block px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition">
+                                    <i class="fas fa-file-csv"></i>
+                                </a>
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
+
+        <div class="mt-4">
+            {{ $sessions->links() }}
+        </div>
     </div>
-@endsection
-
-@section('scripts')
-    <script>
-        async function deleteQuestion(form) {
-            const res = await fetch(form.action, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                },
-                body: new FormData(form)
-            });
-
-            const data = await res.json();
-            if (res.ok && data.success) {
-                alert(data.message || "Soal berhasil dihapus");
-                window.location.reload();
-            } else {
-                alert("Gagal menghapus: " + (data.message || "Unknown error"));
-            }
-        }
-    </script>
 @endsection

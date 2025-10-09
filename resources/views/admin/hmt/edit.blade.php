@@ -6,6 +6,13 @@
     <div class="bg-white p-6 rounded-xl shadow-md max-w-3xl mx-auto">
         <h1 class="text-2xl font-bold text-orange-600 mb-6">Edit Soal HMT</h1>
 
+        <div class="my-4">
+            <a href="{{ route('admin.hmt.index') }}"
+                class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition text-center">
+                <i class="fa fa-arrow-left"></i> Kembali
+            </a>
+        </div>
+
         <form id="hmt-form" action="{{ route('admin.hmt.update', $question->id) }}" method="POST"
             enctype="multipart/form-data" class="space-y-6" x-data="{ answers: @js($question->answer_paths ?? []), correctIndex: @js($question->correct_index) }">
             @csrf

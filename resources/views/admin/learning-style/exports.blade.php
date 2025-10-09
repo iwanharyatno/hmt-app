@@ -15,6 +15,7 @@
             <tr>
                 <td>{{ $p['id'] }}</td>
                 <td>{{ $p['user'] }}</td>
+                <td>{{ $p['email'] }}</td>
                 <td>{{ $p['pemrosesan'] }}</td>
                 <td>{{ $p['persepsi'] }}</td>
                 <td>{{ $p['input'] }}</td>

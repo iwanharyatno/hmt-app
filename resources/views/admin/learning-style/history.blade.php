@@ -15,12 +15,13 @@
     </div>
 
     <!-- Table -->
-    <div class="hidden sm:block overflow-hidden rounded-lg border border-gray-200">
+    <div class="overflow-x-auto rounded-lg border border-gray-200">
         <table class="w-full text-sm">
             <thead class="bg-orange-100 text-orange-700">
                 <tr>
                     <th class="py-3 px-4 text-left">User Id</th>
                     <th class="py-3 px-4 text-left">User</th>
+                    <th class="py-3 px-4 text-left">Email</th>
                     <th class="py-3 px-4 text-left">Pemrosesan</th>
                     <th class="py-3 px-4 text-left">Persepsi</th>
                     <th class="py-3 px-4 text-left">Input</th>
@@ -33,6 +34,7 @@
                     <tr class="border-t hover:bg-orange-50">
                         <td class="py-3 px-4">{{ $p['user']->id }}</td>
                         <td class="py-3 px-4">{{ $p['user']->name }}</td>
+                        <td class="py-3 px-4">{{ $p['user']->email }}</td>
                         <td class="py-3 px-4">{{ $p['mapped']['Pemrosesan'] }}</td>
                         <td class="py-3 px-4">{{ $p['mapped']['Persepsi'] }}</td>
                         <td class="py-3 px-4">{{ $p['mapped']['Input'] }}</td>

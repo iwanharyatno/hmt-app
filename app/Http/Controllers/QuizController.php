@@ -15,6 +15,13 @@ class QuizController extends Controller
 {
     public function learningStyle()
     {
+        $user = Auth::user()->load(['learningStyleResults' => fn($q) => $q->latest()->limit(1)]);
+        $latestLearningStyle = $user->learningStyleResults->first();
+
+        if ($latestLearningStyle) {
+            return redirect()->route('user.dashboard')->with('error', 'Anda sudah pernah mengisi kuisioner ini.');
+        }
+
         $questions = LearningStyleQuestion::where('is_active', true)
             ->orderBy('id')
             ->get(['id', 'question', 'answers']);

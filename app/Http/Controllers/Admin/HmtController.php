@@ -10,7 +10,9 @@ use Illuminate\Support\Facades\Validator;
 use App\Exports\HmtHistoriesExport;
 use App\Exports\HmtHistorySingleExport;
 use App\Models\HmtHistory;
+use App\Models\HmtSession;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
@@ -98,7 +100,6 @@ class HmtController extends Controller
      */
     public function update(Request $request, $id)
     {
-        Log::info($request->all());
         $question = HmtQuestion::findOrFail($id);
 
         $request->validate([
@@ -176,27 +177,116 @@ class HmtController extends Controller
 
     public function history()
     {
-        $participants = HmtHistory::with('user')->select('user_id', DB::raw('MAX(answered_at) as latest_attempt, MIN(answered_at) as oldest_attempt'))->groupBy('user_id')->get();
-        return view('admin.hmt.history', compact('participants'));
+        $sessions = \App\Models\HmtSession::with('user')
+            ->latest()
+            ->paginate(10);
+
+        return view('admin.hmt.history', compact('sessions'));
     }
 
     public function showAnswer($id)
     {
-        $history = HmtHistory::with('user', 'question')->where('user_id', $id)->get();
-        $user = User::find($id);
-        return view('admin.hmt.show', compact('history', 'user'));
+        $session = \App\Models\HmtSession::with(['user', 'histories.question'])->findOrFail($id);
+
+        return view('admin.hmt.show', compact('session'));
     }
 
     public function exportHistoriesCsv()
     {
-        $filename = 'hmt_histories_' . now()->format('Ymd_His') . '.csv';
+        // Ekspor hanya sesi terakhir dari setiap user
+        $filename = 'hmt_histories_latest_sessions_' . now()->format('Ymd_His') . '.csv';
         return Excel::download(new HmtHistoriesExport, $filename, \Maatwebsite\Excel\Excel::CSV);
     }
 
-    public function exportHistoriesSingleCsv($userId)
+    public function exportHistoriesSingleCsv($sessionId)
     {
-        $user = User::find($userId);
-        $filename = 'hmt_history_' . $user->name . '_' . now()->format('Ymd_His') . '.csv';
-        return Excel::download(new HmtHistorySingleExport($userId), $filename, \Maatwebsite\Excel\Excel::CSV);
+        $session = HmtSession::with('user')->findOrFail($sessionId);
+
+        $filename = sprintf(
+            'hmt_history_%s_session_%s_%s.csv',
+            str_replace(' ', '_', strtolower($session->user->name ?? 'unknown')),
+            $session->attempts,
+            now()->format('Ymd_His')
+        );
+
+        return Excel::download(new HmtHistorySingleExport($sessionId), $filename, \Maatwebsite\Excel\Excel::CSV);
+    }
+
+    /**
+     * Start new HMT session
+     */
+    public function startSession(Request $request)
+    {
+        $user = Auth::user();
+
+        // Hitung attempt keberapa user
+        $latestAttempt = HmtSession::where('user_id', $user->id)->max('attempts') ?? 0;
+
+        $session = HmtSession::create([
+            'user_id' => $user->id,
+            'attempts' => $latestAttempt + 1,
+            'started_at' => now(),
+        ]);
+
+        return response()->json([
+            'message' => 'Session started successfully',
+            'session_id' => $session->id,
+            'attempt' => $session->attempts,
+        ]);
+    }
+
+    /**
+     * Submit answer to current session
+     */
+    public function submitAnswer(Request $request)
+    {
+        $validated = $request->validate([
+            'session_id' => 'required|exists:hmt_sessions,id',
+            'question_id' => 'required|exists:hmt_questions,id',
+            'answer_index' => 'required|integer|min:0',
+        ]);
+
+        $session = HmtSession::findOrFail($validated['session_id']);
+
+        // Optional: verify ownership of session
+        if ($session->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized to submit for this session.');
+        }
+
+        HmtHistory::create([
+            'session_id' => $session->id,
+            'question_id' => $validated['question_id'],
+            'answer_index' => $validated['answer_index'],
+            'answered_at' => now(),
+        ]);
+
+        return response()->json([
+            'message' => 'Answer recorded successfully',
+        ]);
+    }
+
+    /**
+     * Finish current session
+     */
+    public function finishSession(Request $request)
+    {
+        $validated = $request->validate([
+            'session_id' => 'required|exists:hmt_sessions,id',
+        ]);
+
+        $session = HmtSession::findOrFail($validated['session_id']);
+
+        if ($session->user_id !== Auth::id()) {
+            abort(403, 'Unauthorized to finish this session.');
+        }
+
+        $session->update([
+            'finished_at' => now(),
+        ]);
+
+        return response()->json([
+            'message' => 'Session finished successfully',
+            'finished_at' => $session->finished_at,
+        ]);
     }
 }
