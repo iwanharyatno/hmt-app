@@ -22,7 +22,6 @@ Route::prefix('user')->group(function () {
         Route::post('/learning-style/submit', [LearningStyleController::class, 'submit'])
             ->name('user.learning-style.submit');
         Route::get('/hmt', [QuizController::class, 'hmt'])->name('user.quiz.hmt');
-        Route::post('/hmt/answer', [QuizController::class, 'saveHmtAnswer'])->name('quiz.hmt.answer');
 
         Route::post('/hmt/start', [HmtController::class, 'startSession'])->name('quiz.hmt.start');
         Route::post('/hmt/answer', [HmtController::class, 'submitAnswer'])->name('quiz.hmt.answer');

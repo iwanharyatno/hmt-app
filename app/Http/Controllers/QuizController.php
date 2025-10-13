@@ -52,6 +52,7 @@ class QuizController extends Controller
             Setting::HMT_DURATION => Setting::getValue(Setting::HMT_DURATION, ''),
             Setting::HMT_DESCRIPTION => Setting::getValue(Setting::HMT_DESCRIPTION, ''),
             Setting::HMT_PRIVACY => Setting::getValue(Setting::HMT_PRIVACY, ''),
+            Setting::HMT_SOAL_FIRST => boolval(Setting::getValue(Setting::HMT_SOAL_FIRST, false)),
         ];
 
         $questions = HmtQuestion::where('is_active', true)->get()->map(function ($q) {

@@ -260,8 +260,11 @@ class HmtController extends Controller
             'answered_at' => now(),
         ]);
 
+        $isCorrect = HmtQuestion::find($validated['question_id'])->correct_index == $validated['answer_index'];
+
         return response()->json([
             'message' => 'Answer recorded successfully',
+            'is_correct' => $isCorrect,
         ]);
     }
 

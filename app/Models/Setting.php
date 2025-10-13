@@ -13,9 +13,11 @@ class Setting extends Model
      */
     public const HMT_DESCRIPTION = 'hmt_description';
     public const HMT_PRIVACY = 'hmt_privacy';
+    public const HMT_DURATION = 'hmt_duration';
+    public const HMT_SOAL_FIRST = 'hmt_soal_first';
     public const LS_DESCRIPTION = 'ls_description';
     public const LS_PRIVACY = 'ls_privacy';
-    public const HMT_DURATION = 'hmt_duration';
+    public const WEB_FEEDBACK_FORM_URL = 'feedback_form_url';
 
     /**
      * Get a setting value by key
@@ -43,7 +45,9 @@ class Setting extends Model
             self::HMT_PRIVACY,
             self::LS_DESCRIPTION,
             self::LS_PRIVACY,
-            self::HMT_DURATION
+            self::HMT_DURATION,
+            self::HMT_SOAL_FIRST,
+            self::WEB_FEEDBACK_FORM_URL,
         ];
     }
 }

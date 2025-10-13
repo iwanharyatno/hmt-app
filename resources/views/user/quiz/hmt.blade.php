@@ -92,8 +92,9 @@
                         SELESAI
                 ======================= -->
             <div x-show="!currentQuestion && !showPreface" class="text-center mt-10">
-                <h2 class="text-2xl font-bold text-orange-600">Kuis selesai 🎉</h2>
-                <p class="text-gray-600">Terima kasih sudah mengerjakan.</p>
+                <h2 class="text-2xl font-bold text-orange-600 mb-6">Kuis selesai 🎉</h2>
+                <p class="text-gray-600">Akurasi anda.</p>
+                <p class="my-4 text-green-600 text-4xl" x-text="`${totalCorrect.reduce((acc, i) => acc+=i)} / ${questions.length}`"></p>
                 <div class="mt-8">
                     <button @click="window.location.href='{{ route('user.dashboard') }}'"
                         class="bg-orange-600 text-white px-6 py-2 rounded-lg hover:bg-orange-700 transition">
@@ -136,6 +137,7 @@
                 showPreface: true,
                 showAnswers: false,
                 privacyAgreed: false,
+                soalAndJawaban: !!Number('{{ $settings[\App\Models\Setting::HMT_SOAL_FIRST] }}'),
                 showPrivacy: false,
                 selectedAnswer: null,
                 timeLeft: Number('{{ $settings[\App\Models\Setting::HMT_DURATION] }}'),
@@ -143,6 +145,7 @@
                 timer: null,
                 sessionId: null, // ← new
                 loading: false,
+                totalCorrect: new Array(questions.length).fill(0),
 
                 async startQuiz() {
                     if (this.loading) return;
@@ -182,10 +185,12 @@
                     this.showAnswers = false;
                     this.selectedAnswer = null;
 
+                    if (this.soalAndJawaban) this.showAnswers = true;
+
                     if (this.timer) clearInterval(this.timer);
                     this.timer = setInterval(() => {
                         this.timeLeft--;
-                        if (this.timeLeft === Math.floor(this.totalTime / 2)) {
+                        if (this.timeLeft === Math.floor(this.totalTime / 2) && !this.soalAndJawaban) {
                             this.showAnswers = true;
                         }
                         if (this.timeLeft <= 0) {
@@ -199,7 +204,7 @@
                     this.selectedAnswer = answerIndex;
 
                     try {
-                        await fetch("{{ route('quiz.hmt.answer') }}", {
+                        const result = await fetch("{{ route('quiz.hmt.answer') }}", {
                             method: 'POST',
                             headers: {
                                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
@@ -211,6 +216,9 @@
                                 answer_index: answerIndex,
                             })
                         });
+                        const res = await result.json();
+                        
+                        this.totalCorrect[this.currentIndex] = res.is_correct ? 1 : 0;
                     } catch (err) {
                         console.error(err);
                     }

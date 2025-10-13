@@ -24,6 +24,7 @@
     <main class="container mx-auto ">
         @yield('content')
     </main>
+    <x-feedback-fab />
 
     @stack('scripts')
 </body>
