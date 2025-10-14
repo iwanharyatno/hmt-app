@@ -54,17 +54,23 @@
             <form action="{{ route('login') }}" method="POST" class="mt-2 space-y-4">
                 @csrf
                 <div>
-                    <input type="email" name="email" placeholder="Email Address" required value="{{ old('email') }}"
+                    <label for="email" class="block mb-1">Email</label>
+                    <input type="email" name="email" required
+                        value="{{ old('email') }}" id="email"
                         class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none text-sm">
                 </div>
 
-                <div class="relative">
-                    <input type="password" name="password" id="password" placeholder="Password" required
-                        class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none text-sm pr-10">
-                    <button type="button" onclick="togglePassword()"
-                        class="absolute right-3 top-3 text-gray-500 hover:text-gray-700">
-                        <i id="eye-icon" class="fas fa-eye"></i>
-                    </button>
+                <div>
+                    <label for="password" class="block mb-1">Password</label>
+                    <div class="relative">
+                        <input type="password" name="password" id="password" required
+                            id="password"
+                            class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none text-sm pr-10">
+                        <button type="button" onclick="togglePassword()"
+                            class="absolute right-3 top-3 text-gray-500 hover:text-gray-700">
+                            <i id="eye-icon" class="fas fa-eye"></i>
+                        </button>
+                    </div>
                 </div>
 
                 <button type="submit"

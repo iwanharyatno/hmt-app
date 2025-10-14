@@ -18,6 +18,7 @@ class SettingController extends Controller
             Setting::LS_DESCRIPTION => Setting::getValue(Setting::LS_DESCRIPTION, ''),
             Setting::LS_PRIVACY => Setting::getValue(Setting::LS_PRIVACY, ''),
             Setting::WEB_FEEDBACK_FORM_URL => Setting::getValue(Setting::WEB_FEEDBACK_FORM_URL, ''),
+            Setting::WEB_ALLOW_LS => Setting::getValue(Setting::WEB_ALLOW_LS, ''),
         ];
 
         return view('admin.settings', compact('settings'));
@@ -28,6 +29,10 @@ class SettingController extends Controller
         $data = $request->all();
         foreach (Setting::allKeys() as $key) {
             if ($key === Setting::HMT_SOAL_FIRST) {
+                Setting::setValue($key, isset($data[$key]));
+                continue;
+            }
+            if ($key === Setting::WEB_ALLOW_LS) {
                 Setting::setValue($key, isset($data[$key]));
                 continue;
             }

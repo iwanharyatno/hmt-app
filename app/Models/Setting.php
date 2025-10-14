@@ -18,6 +18,7 @@ class Setting extends Model
     public const LS_DESCRIPTION = 'ls_description';
     public const LS_PRIVACY = 'ls_privacy';
     public const WEB_FEEDBACK_FORM_URL = 'feedback_form_url';
+    public const WEB_ALLOW_LS = 'allow_ls';
 
     /**
      * Get a setting value by key
@@ -48,6 +49,7 @@ class Setting extends Model
             self::HMT_DURATION,
             self::HMT_SOAL_FIRST,
             self::WEB_FEEDBACK_FORM_URL,
+            self::WEB_ALLOW_LS
         ];
     }
 }

@@ -138,7 +138,7 @@
                         </div>
 
                         <div class="mt-auto">
-                            @if ($latestLearningStyle)
+                            @if ($latestLearningStyle || !!$settings[\App\Models\Setting::WEB_ALLOW_LS])
                                 <a href="{{ route('user.quiz.hmt') }}"
                                     class="px-5 py-2 bg-orange-600 text-white rounded-lg hover:bg-green-500 text-sm transition flex items-center gap-2">
                                     <i class="fas fa-play-circle"></i> Mulai Tes

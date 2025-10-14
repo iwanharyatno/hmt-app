@@ -44,6 +44,16 @@
                             class="border w-full border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-orange-500 focus:outline-none">
                         <p class="text-xs text-gray-500 mt-1">Form eksternal untuk pengisian feedback website ini</p>
                     </div>
+
+                    <div>
+                        <input type="checkbox"
+                            {{ boolval($settings[\App\Models\Setting::WEB_ALLOW_LS]) ? 'checked' : '' }}
+                            name="{{ \App\Models\Setting::WEB_ALLOW_LS }}" id="soal-first">
+                        <label class="text-sm font-medium text-gray-700 mb-1" for="soal-first">
+                            Perbolehkan isi HMT terlebih dahulu
+                        </label>
+                        <p class="text-xs text-gray-500 mt-1">Perbolehkan user mengisi kuis HMT tanpa harus mengisi Kuisioner Learning Style terlebih dahulu.</p>
+                    </div>
                 </div>
             </div>
 
@@ -71,12 +81,16 @@
                             detik).</p>
                     </div>
 
+                    {{-- HMT Soal dan jawaban --}}
                     <div>
-                        <input type="checkbox" {{ boolval($settings[\App\Models\Setting::HMT_SOAL_FIRST]) ? 'checked' : '' }} name="{{ \App\Models\Setting::HMT_SOAL_FIRST }}" id="soal-first">
+                        <input type="checkbox"
+                            {{ boolval($settings[\App\Models\Setting::HMT_SOAL_FIRST]) ? 'checked' : '' }}
+                            name="{{ \App\Models\Setting::HMT_SOAL_FIRST }}" id="soal-first">
                         <label class="text-sm font-medium text-gray-700 mb-1" for="soal-first">
                             HMT Soal dan Jawaban
                         </label>
-                        <p class="text-xs text-gray-500 mt-1">Menentukan apakah kuis HMT terjadi dalam 2 tahap: soal only kemudian soal dan jawaban setengah waktu, atau soal dan jawaban full time.</p>
+                        <p class="text-xs text-gray-500 mt-1">Menentukan apakah kuis HMT terjadi dalam 2 tahap: soal only
+                            kemudian soal dan jawaban setengah waktu, atau soal dan jawaban full time.</p>
                     </div>
 
                     <!-- Deskripsi -->

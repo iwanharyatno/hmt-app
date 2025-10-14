@@ -44,7 +44,9 @@ class QuizController extends Controller
         $user = Auth::user()->load(['learningStyleResults' => fn($q) => $q->latest()->limit(1)]);
         $latestLearningStyle = $user->learningStyleResults->first();
 
-        if (!$latestLearningStyle) {
+        $allowLs = Setting::getValue(Setting::WEB_ALLOW_LS);
+
+        if (!$latestLearningStyle && !$allowLs) {
             return redirect()->route('user.dashboard')->with('error', 'Silakan isi kuisioner Learning Style terlebih dahulu sebelum memulai HMT.');
         }
 

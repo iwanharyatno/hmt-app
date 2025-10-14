@@ -25,6 +25,11 @@ class UserRegistrationRequest extends FormRequest
             'name' => 'required',
             'email' => 'required',
             'password' => 'required',
+
+            'gender' => 'nullable|in:L,P',
+            'birthDate' => 'nullable|date',
+            'phone' => 'nullable',
+            'institution' => 'nullable',
         ];
     }
 }
