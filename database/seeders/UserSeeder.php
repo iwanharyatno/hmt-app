@@ -19,5 +19,11 @@ class UserSeeder extends Seeder
             'email' => 'loremipsum@lorem.com',
             'password' => Hash::make('lorem123')
         ]);
+
+        User::create([
+            'name' => 'Admin',
+            'email' => 'admin@hmttest.com',
+            'password' => Hash::make(env('HMT_ADMIN_PASSWORD'))
+        ]);
     }
 }
