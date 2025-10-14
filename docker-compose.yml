@@ -9,13 +9,13 @@ services:
     container_name: hmt_app
     restart: always
     depends_on:
-      - mysql
+      - mysql_hmt
     environment:
       APP_ENV: production
       APP_DEBUG: false
       APP_KEY: base64:EerF9HppDo22DRmN1w7OoTK/VPy5UxYk5JvCZqbY+UM=
       DB_CONNECTION: mysql
-      DB_HOST: mysql
+      DB_HOST: mysql_hmt
       DB_PORT: 3306
       DB_DATABASE: laravel
       DB_USERNAME: laravel
@@ -25,9 +25,9 @@ services:
     networks:
       - laravel_net
 
-  nginx:
+  nginx_hmt:
     image: nginx:stable-alpine
-    container_name: nginx
+    container_name: nginx_hmt
     restart: always
     ports:
       - "8800:80"
@@ -39,9 +39,9 @@ services:
     networks:
       - laravel_net
 
-  mysql:
+  mysql_hmt:
     image: mysql:8.3
-    container_name: mysql
+    container_name: mysql_hmt
     restart: always
     environment:
       MYSQL_DATABASE: laravel
