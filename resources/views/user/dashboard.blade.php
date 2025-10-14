@@ -165,8 +165,8 @@
             <!-- Logo & Description -->
             <div>
                 <div class="flex items-center gap-2 mb-4">
-                    <img src="{{ asset('asset/fun run.png') }}" alt="Logo" class="w-10 h-10">
-                    <span class="font-bold text-xl text-gray-800">IQ Test App</span>
+                    {{-- <img src="{{ asset('asset/fun run.png') }}" alt="Logo" class="w-10 h-10"> --}}
+                    <span class="font-bold text-xl text-gray-800">LSHT Test</span>
                 </div>
                 <p class="text-gray-600 text-sm leading-relaxed">
                     Platform tes psikologi & IQ modern untuk membantu kamu
