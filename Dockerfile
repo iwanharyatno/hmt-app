@@ -5,11 +5,11 @@ FROM node:20-alpine AS frontend-builder
 
 WORKDIR /app
 
-# Copy and install frontend dependencies
+# Copy package.json & lock file, install deps
 COPY package*.json ./
 RUN npm ci
 
-# Copy source and build assets
+# Copy all source and build frontend assets
 COPY . .
 RUN npm run build
 
@@ -39,25 +39,28 @@ RUN apk add --no-cache \
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
  && docker-php-ext-install -j$(nproc) gd pdo_mysql mbstring exif pcntl bcmath intl zip
 
-# Install Composer
+# Copy Composer binary
 COPY --from=composer:2.7 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-# Copy composer files and install production dependencies
-COPY composer.json composer.lock ./
-RUN composer install --no-dev --no-interaction --optimize-autoloader
-
-# Copy built frontend assets
-COPY --from=frontend-builder /app/public/build ./public/build
-
-# Copy Laravel source code
+# Copy *seluruh* source code dulu
 COPY . .
 
-# Set correct permissions
+# Copy built assets dari Node build stage
+COPY --from=frontend-builder /app/public/build ./public/build
+
+# Install production dependencies
+RUN composer install --no-dev --no-interaction --optimize-autoloader --no-progress
+
+# Generate Laravel cache files untuk optimize runtime
+RUN php artisan config:cache && php artisan route:cache && php artisan view:cache || true
+
+# Set file ownership & permission
 RUN chown -R www-data:www-data storage bootstrap/cache
 
 # Expose PHP-FPM port
 EXPOSE 9000
 
+# Start PHP-FPM
 CMD ["php-fpm"]
