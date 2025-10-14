@@ -59,6 +59,9 @@ RUN php artisan config:cache && php artisan route:cache && php artisan view:cach
 # Set file ownership & permission
 RUN chown -R www-data:www-data storage bootstrap/cache
 
+# Re-run autoload to ensure vendor exists
+RUN composer dump-autoload --optimize
+
 # Expose PHP-FPM port
 EXPOSE 9000
 
