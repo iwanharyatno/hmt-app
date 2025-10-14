@@ -5,8 +5,7 @@
 
             <!-- 🔹 Logo -->
             <div class="flex items-center space-x-3">
-                <img src="{{ asset('asset/fun run.png') }}" alt="Logo" class="h-14 w-auto">
-                <span class="text-xl font-semibold text-gray-700">Test</span>
+                <span class="text-xl font-semibold text-gray-700">LSHMT Test</span>
             </div>
 
             <!-- 🔹 Desktop Menu -->
