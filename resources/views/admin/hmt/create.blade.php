@@ -60,41 +60,65 @@
             <!-- Tombol -->
             <div class="flex justify-end space-x-3">
                 <a href="{{ route('admin.hmt.index') }}" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Batal</a>
-                <button type="submit"
-                    class="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600">Simpan</button>
+                <button type="submit" id="submit-btn"
+                    class="px-4 py-2 bg-orange-500 disabled:pointer-events-none text-white rounded hover:bg-orange-600 flex items-center justify-center gap-2">
+                    <span id="submit-text">Simpan</span>
+                    <svg id="submit-spinner" class="animate-spin h-5 w-5 text-white hidden"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                            stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                    </svg>
+                </button>
             </div>
         </form>
     </div>
 @endsection
 
 @push('scripts')
-    <script>
-        document.getElementById('hmt-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const form = e.target;
-            const formData = new FormData(form);
+<script>
+    document.getElementById('hmt-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const form = e.target;
+        const submitBtn = document.getElementById('submit-btn');
+        const submitText = document.getElementById('submit-text');
+        const spinner = document.getElementById('submit-spinner');
 
-            try {
-                const res = await fetch(form.action, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                    },
-                    body: formData
-                });
+        // Tampilkan loading state
+        submitBtn.disabled = true;
+        submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
+        submitText.textContent = 'Menyimpan...';
+        spinner.classList.remove('hidden');
 
-                const data = await res.json();
+        const formData = new FormData(form);
 
-                if (res.ok && data.success) {
-                    alert(data.message || "Soal berhasil disimpan");
-                    window.location.href = "{{ route('admin.hmt.index') }}";
-                } else {
-                    alert("Terjadi kesalahan: " + (data.message || "Unknown error"));
-                }
-            } catch (err) {
-                console.error(err);
-                alert("Gagal submit form, coba lagi.");
+        try {
+            const res = await fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: formData
+            });
+
+            const data = await res.json();
+
+            if (res.ok && data.success) {
+                alert(data.message || "Soal berhasil disimpan");
+                window.location.href = "{{ route('admin.hmt.index') }}";
+            } else {
+                alert("Terjadi kesalahan: " + (data.message || "Unknown error"));
             }
-        });
-    </script>
+        } catch (err) {
+            console.error(err);
+            alert("Gagal submit form, coba lagi.");
+        } finally {
+            // Kembalikan tombol ke normal
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+            submitText.textContent = 'Simpan';
+            spinner.classList.add('hidden');
+        }
+    });
+</script>
 @endpush

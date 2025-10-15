@@ -19,9 +19,7 @@
             @method('PUT')
 
             <div>
-                <input type="checkbox" name="is_active" @if ($question->is_active)
-                    checked
-                @endif id="is_active">
+                <input type="checkbox" name="is_active" @if ($question->is_active) checked @endif id="is_active">
                 <label class="text-gray-700 mb-1" for="is_active">Aktif</label>
             </div>
 
@@ -84,8 +82,16 @@
             <!-- Tombol -->
             <div class="flex justify-end space-x-3">
                 <a href="{{ route('admin.hmt.index') }}" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Batal</a>
-                <button type="submit"
-                    class="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600">Update</button>
+                <button type="submit" id="submit-btn"
+                    class="px-4 py-2 bg-orange-500 text-white disabled:pointer-events-none rounded hover:bg-orange-600 flex items-center justify-center gap-2">
+                    <span id="submit-text">Update</span>
+                    <svg id="submit-spinner" class="animate-spin h-5 w-5 text-white hidden"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                            stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                    </svg>
+                </button>
             </div>
         </form>
     </div>
@@ -97,6 +103,15 @@
             e.preventDefault();
             const form = e.target;
             const formData = new FormData(form);
+            const submitBtn = document.getElementById('submit-btn');
+            const submitText = document.getElementById('submit-text');
+            const spinner = document.getElementById('submit-spinner');
+
+            // Loading state
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-70', 'cursor-not-allowed');
+            submitText.textContent = 'Menyimpan...';
+            spinner.classList.remove('hidden');
 
             try {
                 const res = await fetch(form.action, {
@@ -118,6 +133,12 @@
             } catch (err) {
                 console.error(err);
                 alert("Gagal submit form, coba lagi.");
+            } finally {
+                // Reset state
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+                submitText.textContent = 'Update';
+                spinner.classList.add('hidden');
             }
         });
     </script>

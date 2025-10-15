@@ -169,10 +169,7 @@ class HmtController extends Controller
 
         $question->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Soal berhasil dihapus',
-        ]);
+        return back();
     }
 
     public function history()

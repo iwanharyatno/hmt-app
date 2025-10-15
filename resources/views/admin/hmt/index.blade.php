@@ -59,14 +59,13 @@
 
                                 <!-- Konfirmasi -->
                                 <div x-show="showConfirm" x-cloak
-                                    class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40">
+                                    class="fixed inset-0 flex items-center justify-center bg-black/40">
                                     <div class="bg-white p-6 rounded shadow max-w-sm w-full">
                                         <p class="text-gray-700 mb-4">Yakin ingin menghapus pertanyaan ini?</p>
                                         <div class="flex justify-end space-x-3">
                                             <button @click="showConfirm = false"
                                                 class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">Batal</button>
-                                            <form action="{{ route('admin.hmt.destroy', $q->id) }}" method="POST"
-                                                onsubmit="event.preventDefault(); deleteQuestion(this);">
+                                            <form action="{{ route('admin.hmt.destroy', $q->id) }}" method="POST">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit"
@@ -107,14 +106,13 @@
 
                     <!-- Konfirmasi -->
                     <div x-show="showConfirm" x-cloak
-                        class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40">
+                        class="fixed inset-0 flex items-center justify-center bg-black/40">
                         <div class="bg-white p-6 rounded shadow max-w-sm w-full">
                             <p class="text-gray-700 mb-4">Yakin ingin menghapus pertanyaan ini?</p>
                             <div class="flex justify-end space-x-3">
                                 <button @click="showConfirm = false"
                                     class="px-3 py-1 bg-gray-300 rounded hover:bg-gray-400">Batal</button>
-                                <form action="{{ route('admin.hmt.destroy', $q->id) }}" method="POST"
-                                    onsubmit="event.preventDefault(); deleteQuestion(this);">
+                                <form action="{{ route('admin.hmt.destroy', $q->id) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"
@@ -127,26 +125,4 @@
             @endforeach
         </div>
     </div>
-@endsection
-
-@section('scripts')
-    <script>
-        async function deleteQuestion(form) {
-            const res = await fetch(form.action, {
-                method: 'POST',
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                },
-                body: new FormData(form)
-            });
-
-            const data = await res.json();
-            if (res.ok && data.success) {
-                alert(data.message || "Soal berhasil dihapus");
-                window.location.reload();
-            } else {
-                alert("Gagal menghapus: " + (data.message || "Unknown error"));
-            }
-        }
-    </script>
 @endsection
