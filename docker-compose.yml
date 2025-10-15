@@ -19,7 +19,7 @@ services:
       DB_USERNAME: laravel
       DB_PASSWORD: secret
     volumes:
-      - app_code:/var/www/html
+      - .:/var/www/html
     networks:
       - laravel_net
 
