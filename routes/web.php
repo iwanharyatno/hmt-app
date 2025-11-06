@@ -8,6 +8,7 @@ use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\QuizController;
+use App\Http\Controllers\TrixAttachmentController;
 use App\Http\Middleware\EnsureUserIsAdmin;
 
 Route::get('/', function () {
@@ -60,3 +61,5 @@ Route::post('/login', [AuthController::class, 'handleLogin'])->name('handle-logi
 Route::get('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/register', [AuthController::class, 'handleRegister'])->name('handle-register');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::post('/trix-attachments', [TrixAttachmentController::class, 'store'])->name('trix.attachments.store');

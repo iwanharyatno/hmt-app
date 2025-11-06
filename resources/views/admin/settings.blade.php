@@ -46,13 +46,13 @@
                     </div>
 
                     <div>
-                        <input type="checkbox"
-                            {{ boolval($settings[\App\Models\Setting::WEB_ALLOW_LS]) ? 'checked' : '' }}
+                        <input type="checkbox" {{ boolval($settings[\App\Models\Setting::WEB_ALLOW_LS]) ? 'checked' : '' }}
                             name="{{ \App\Models\Setting::WEB_ALLOW_LS }}" id="soal-first">
                         <label class="text-sm font-medium text-gray-700 mb-1" for="soal-first">
                             Perbolehkan isi HMT terlebih dahulu
                         </label>
-                        <p class="text-xs text-gray-500 mt-1">Perbolehkan user mengisi kuis HMT tanpa harus mengisi Kuisioner Learning Style terlebih dahulu.</p>
+                        <p class="text-xs text-gray-500 mt-1">Perbolehkan user mengisi kuis HMT tanpa harus mengisi
+                            Kuisioner Learning Style terlebih dahulu.</p>
                     </div>
                 </div>
             </div>
@@ -161,4 +161,38 @@
 
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/trix@2.0.8/dist/trix.umd.min.js"></script>
+@endpush
+
+@push('scripts')
+    <script>
+        document.addEventListener('trix-attachment-add', function(event) {
+            const attachment = event.attachment;
+            if (attachment.file) {
+                uploadAttachment(attachment);
+            }
+        });
+
+        function uploadAttachment(attachment) {
+            const formData = new FormData();
+            formData.append('attachment', attachment.file);
+
+            fetch("{{ route('trix.attachments.store') }}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    attachment.setAttributes({
+                        url: data.url,
+                        href: data.url
+                    });
+                })
+                .catch(error => {
+                    console.error('Upload gagal:', error);
+                });
+        }
+    </script>
 @endpush
