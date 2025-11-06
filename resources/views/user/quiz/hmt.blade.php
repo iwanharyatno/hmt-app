@@ -91,7 +91,7 @@
                 <p class="text-center text-sm text-gray-600">Coba pilih jawaban yang berbeda dari sebelumnya.</p>
 
                 <div class="flex justify-center mb-6">
-                    <img src="{{ asset('images/demo/hmt-sample-question2.png') }}" alt="Contoh Soal HMT 2"
+                    <img src="{{ asset('images/demo2/hmt-sample-question.png') }}" alt="Contoh Soal HMT 2"
                         class="rounded-lg shadow max-h-64">
                 </div>
 
@@ -103,7 +103,7 @@
                                 demoSelected2 === i ? 'bg-orange-200 ring-2 ring-orange-500'
                                                     : 'bg-white hover:bg-orange-50 border border-gray-200'
                             ]">
-                            <img :src="'{{ asset('images/demo/hmt-sample-answer') }}' + i + '.png'"
+                            <img :src="'{{ asset('images/demo2/hmt-sample-answer') }}' + i + '.png'"
                                 alt="Jawaban Demo" class="max-h-20 object-contain">
                         </button>
                     </template>
