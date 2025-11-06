@@ -22,7 +22,7 @@
                 </h1>
                 <p class="text-gray-700 mb-6">
                     Tes psikologi untuk setiap pertanyaan karier dan pengembangan diri.
-                    Mulai dari pemilihan karier hingga tes IQ, untuk penilaian kepribadian dan latihan tes kerja.
+                    Berpartisipasilah dalam penelitian mengenai gaya belajar khusus dan gelombang otak yang menyertainya.
                 </p>
                 <a href="{{ route('user.quiz.learning-style') }}"
                     class="inline-flex items-center gap-2 bg-orange-600 text-white font-medium px-6 py-3 rounded-lg shadow hover:bg-orange-700 transition">
