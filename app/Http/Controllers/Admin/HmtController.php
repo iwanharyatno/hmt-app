@@ -75,7 +75,9 @@ class HmtController extends Controller
             'question_path' => $questionPath,
             'answer_paths'  => $answerPaths,
             'correct_index' => $request->correct_index,
-            'is_active' => $request->has('is_active')
+            'is_active' => $request->has('is_active'),
+            'is_example' => $request->has('is_example'),
+            'solution_description' => $request->solution_description
         ]);
 
         return response()->json([
@@ -139,6 +141,8 @@ class HmtController extends Controller
 
         $question->correct_index = $request->correct_index;
         $question->is_active = $request->has('is_active');
+        $question->is_example = $request->has('is_example');
+        $question->solution_description = $request->solution_description;
 
         $question->save();
 

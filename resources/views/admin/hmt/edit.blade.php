@@ -23,8 +23,27 @@
                 <label class="text-gray-700 mb-1" for="is_active">Aktif</label>
             </div>
 
+            <!-- Contoh / Solusi -->
+            <div x-data="{ showSolution: !!Number('{{ $question->is_example }}') }" class="space-y-3">
+
+                <div class="flex items-center gap-2">
+                    <input type="checkbox" name="is_example" id="is_example" x-model="showSolution">
+                    <label for="is_example" class="text-gray-700">Tampilkan Sebagai Contoh</label>
+                </div>
+
+                <div x-show="showSolution" x-transition>
+                    <label class="block text-gray-700 mb-1">Deskripsi Solusi</label>
+
+                    <input id="solution_description" type="hidden" name="solution_description"
+                        value="{{ $question->solution_description ?? '' }}">
+
+                    <trix-editor input="solution_description"
+                        class="trix-content border rounded-lg p-2 bg-white min-h-40"></trix-editor>
+                </div>
+            </div>
+
             <!-- Upload Gambar Soal -->
-            <div>
+            <div x-data="{ questionPreview: null }">
                 <label class="block text-gray-700 mb-1">Gambar Soal</label>
                 @if ($question->question_path)
                     <div class="mb-2">
@@ -33,7 +52,11 @@
                     </div>
                 @endif
                 <input type="file" name="question_path"
+                    @change="questionPreview = $event.target.files[0] ? URL.createObjectURL($event.target.files[0]) : null"
                     class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-orange-400">
+                <template x-if="questionPreview">
+                    <img :src="questionPreview" class="mt-3 rounded-lg border w-40 object-contain">
+                </template>
                 <p class="text-xs text-gray-500 mt-1">Kosongkan jika tidak ingin mengganti gambar soal</p>
             </div>
 
@@ -42,7 +65,7 @@
                 <label class="block text-gray-700 mb-2">Pilihan Jawaban</label>
                 <div class="grid grid-cols-2 gap-4">
                     <template x-for="(item, index) in answers" :key="index">
-                        <div class="border p-3 rounded-lg">
+                        <div class="border p-3 rounded-lg" x-data="{ preview: null }">
                             <label class="block text-gray-600 mb-1">
                                 Jawaban <span x-text="index + 1"></span>
                             </label>
@@ -55,7 +78,12 @@
 
                             <!-- Input file -->
                             <input type="file" :name="'answer_paths[' + index + ']'"
+                                @change="preview = $event.target.files[0] ? URL.createObjectURL($event.target.files[0]) : null"
                                 class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-orange-400">
+
+                            <template x-if="preview">
+                                <img :src="preview" class="mt-2 rounded-lg border w-24 object-contain">
+                            </template>
 
                             <!-- Pilih jawaban benar -->
                             <div class="mt-2 flex items-center">

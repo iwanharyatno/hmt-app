@@ -68,7 +68,19 @@ class QuizController extends Controller
             ];
         });
 
-        return view('user.quiz.hmt', compact('questions', 'settings'));
+        $examples = HmtQuestion::where('is_example', true)->get()->map(function ($q) {
+            return [
+                'id'            => $q->id,
+                'question_path' => Storage::url($q->question_path),
+                'answer_paths'  => collect($q->answer_paths ?? [])
+                    ->map(fn($p) => $p ? Storage::url($p) : null)
+                    ->toArray(),
+                'correct_index' => $q->correct_index,
+                'solution_description' => $q->solution_description
+            ];
+        });
+
+        return view('user.quiz.hmt', compact('questions', 'settings', 'examples'));
     }
 
     /**

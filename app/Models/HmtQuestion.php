@@ -13,6 +13,8 @@ class HmtQuestion extends Model
         'question_path',
         'answer_paths',
         'correct_index',
+        'is_example',
+        'solution_description'
     ];
 
     protected $casts = [

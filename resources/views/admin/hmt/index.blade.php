@@ -28,6 +28,7 @@
                         <th class="py-3 px-4 text-left">Pertanyaan</th>
                         <th class="py-3 px-4 text-left">Gambar</th>
                         <th class="py-3 px-4 text-left">Aktif</th>
+                        <th class="py-3 px-4 text-left">Contoh</th>
                         <th class="py-3 px-4 text-left">Aksi</th>
                     </tr>
                 </thead>
@@ -46,6 +47,9 @@
                             </td>
                             <td class="py-3 px-4 space-x-2">
                                 {{ $q->is_active ? 'Aktif' : 'Tidak Aktif' }}
+                            </td>
+                            <td class="py-3 px-4 space-x-2">
+                                {{ $q->is_example ? 'Ya' : 'Bukan' }}
                             </td>
                             <td class="py-3 px-4 space-x-2">
                                 <a href="{{ route('admin.hmt.edit', $q->id) }}"
