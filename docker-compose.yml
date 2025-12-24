@@ -51,8 +51,6 @@ services:
       MYSQL_ROOT_PASSWORD: root
     volumes:
       - db_data:/var/lib/mysql
-    ports:
-      - "3307:3306"
     networks:
       - laravel_net
 
