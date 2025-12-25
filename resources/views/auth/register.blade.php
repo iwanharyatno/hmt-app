@@ -43,7 +43,7 @@
                 @csrf
                 <div>
                     <label for="name" class="block mb-1">Nama Lengkap <span class="text-red-600">*</span></label>
-                    <input type="text" name="name" id="name" required
+                    <input value="{{ old('name') }}" type="text" name="name" id="name" required
                         class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 @error('name') ring-1 ring-red-600 @enderror focus:outline-none text-sm">
                     @error('name')
                         <span class="text-red-600 text-sm">{{ $message }}</span>
@@ -52,7 +52,7 @@
 
                 <div>
                     <label for="email" class="block mb-1">Email <span class="text-red-600">*</span></label>
-                    <input type="email" name="email" required id="email"
+                    <input value="{{ old('email') }}" type="email" name="email" required id="email"
                         class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 @error('email') ring-1 ring-red-600 @enderror focus:outline-none text-sm">
                     @error('email')
                         <span class="text-red-600 text-sm">{{ $message }}</span>
@@ -61,7 +61,7 @@
 
                 <div>
                     <label for="phone" class="block mb-1">Nomor Telepon</label>
-                    <input type="text" name="phone" required id="phone"
+                    <input value="{{ old('phone') }}" type="text" name="phone" required id="phone"
                         class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 @error('phone') ring-1 ring-red-600 @enderror focus:outline-none text-sm">
                     @error('phone')
                         <span class="text-red-600 text-sm">{{ $message }}</span>
@@ -73,8 +73,8 @@
                     <select name="gender" required id="gender"
                         class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 @error('gender') ring-1 ring-red-600 @enderror focus:outline-none text-sm">
                         <option>-- Pilih Jenis Kelamin --</option>
-                        <option value="L">Laki-laki</option>
-                        <option value="P">Perempuan</option>
+                        <option value="L" {{ old('gender') == 'L' ? 'selected' : '' }}>Laki-laki</option>
+                        <option value="P" {{ old('gender') == 'P' ? 'selected' : '' }}>Perempuan</option>
                     </select>
                     @error('gender')
                         <span class="text-red-600 text-sm">{{ $message }}</span>
@@ -83,7 +83,7 @@
 
                 <div>
                     <label for="birthDate" class="block mb-1">Tanggal Lahir</label>
-                    <input type="date" name="birthDate" required id="birthDate"
+                    <input value="{{ old('birthDate') }}" type="date" name="birthDate" required id="birthDate"
                         class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 @error('birthDate') ring-1 ring-red-600 @enderror focus:outline-none text-sm">
                     @error('birthDate')
                         <span class="text-red-600 text-sm">{{ $message }}</span>
@@ -92,7 +92,7 @@
 
                 <div>
                     <label for="institution" class="block mb-1">Asal Institusi</label>
-                    <input type="text" name="institution" required id="institution"
+                    <input type="text" value="{{ old('institution') }}" name="institution" required id="institution"
                         class="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-orange-500 @error('institution') ring-1 ring-red-600 @enderror focus:outline-none text-sm">
                     @error('institution')
                         <span class="text-red-600 text-sm">{{ $message }}</span>
