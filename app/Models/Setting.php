@@ -15,6 +15,8 @@ class Setting extends Model
     public const HMT_PRIVACY = 'hmt_privacy';
     public const HMT_DURATION = 'hmt_duration';
     public const HMT_SOAL_FIRST = 'hmt_soal_first';
+    public const HMT_SHOW_TIME_LEFT = 'hmt_show_time_left';
+    public const HMT_SHOW_QUESTION_PROGRESS = 'hmt_show_question_progress';
     public const LS_DESCRIPTION = 'ls_description';
     public const LS_PRIVACY = 'ls_privacy';
     public const WEB_FEEDBACK_FORM_URL = 'feedback_form_url';
@@ -48,6 +50,8 @@ class Setting extends Model
             self::LS_PRIVACY,
             self::HMT_DURATION,
             self::HMT_SOAL_FIRST,
+            self::HMT_SHOW_TIME_LEFT,
+            self::HMT_SHOW_QUESTION_PROGRESS,
             self::WEB_FEEDBACK_FORM_URL,
             self::WEB_ALLOW_LS
         ];

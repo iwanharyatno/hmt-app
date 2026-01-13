@@ -42,9 +42,9 @@
                                     @php
                                         $start = \Carbon\Carbon::parse($session->started_at);
                                         $end = \Carbon\Carbon::parse($session->finished_at);
-                                        $duration = $start->diffInMinutes($end);
+                                        $duration = $start->diff($end);
                                     @endphp
-                                    {{ $duration }} menit
+                                    {{ $duration->forHumans() }}
                                 @else
                                     -
                                 @endif

@@ -24,15 +24,15 @@ Route::prefix('user')->group(function () {
             ->name('user.learning-style.submit');
         Route::get('/hmt', [QuizController::class, 'hmt'])->name('user.quiz.hmt');
 
-        Route::post('/hmt/start', [HmtController::class, 'startSession'])->name('quiz.hmt.start');
-        Route::post('/hmt/answer', [HmtController::class, 'submitAnswer'])->name('quiz.hmt.answer');
-        Route::post('/hmt/finish', [HmtController::class, 'finishSession'])->name('quiz.hmt.finish');
+        Route::post('/hmt/start', [QuizController::class, 'startSession'])->name('quiz.hmt.start');
+        Route::post('/hmt/answer', [QuizController::class, 'submitAnswer'])->name('quiz.hmt.answer');
+        Route::post('/hmt/finish', [QuizController::class, 'finishSession'])->name('quiz.hmt.finish');
     });
     Route::get('/result', [UserController::class, 'result'])->name('user.result');
 });
 
 // Admin
-Route::prefix('admin')->middleware('auth', EnsureUserIsAdmin::class)->group(function () {
+Route::prefix('admin')->middleware(['auth', EnsureUserIsAdmin::class])->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 
     Route::get('learning-style', [LearningStyleController::class, 'index'])->name('admin.learning-style.index');

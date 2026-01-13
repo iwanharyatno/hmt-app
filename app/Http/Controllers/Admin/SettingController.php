@@ -19,6 +19,8 @@ class SettingController extends Controller
             Setting::LS_PRIVACY => Setting::getValue(Setting::LS_PRIVACY, ''),
             Setting::WEB_FEEDBACK_FORM_URL => Setting::getValue(Setting::WEB_FEEDBACK_FORM_URL, ''),
             Setting::WEB_ALLOW_LS => Setting::getValue(Setting::WEB_ALLOW_LS, ''),
+            Setting::HMT_SHOW_TIME_LEFT => Setting::getValue(Setting::HMT_SHOW_TIME_LEFT, ''),
+            Setting::HMT_SHOW_QUESTION_PROGRESS => Setting::getValue(Setting::HMT_SHOW_QUESTION_PROGRESS, ''),
         ];
 
         return view('admin.settings', compact('settings'));
@@ -33,6 +35,14 @@ class SettingController extends Controller
                 continue;
             }
             if ($key === Setting::WEB_ALLOW_LS) {
+                Setting::setValue($key, isset($data[$key]));
+                continue;
+            }
+            if ($key === Setting::HMT_SHOW_TIME_LEFT) {
+                Setting::setValue($key, isset($data[$key]));
+                continue;
+            }
+            if ($key === Setting::HMT_SHOW_QUESTION_PROGRESS) {
                 Setting::setValue($key, isset($data[$key]));
                 continue;
             }

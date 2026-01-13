@@ -93,6 +93,28 @@
                             kemudian soal dan jawaban setengah waktu, atau soal dan jawaban full time.</p>
                     </div>
 
+                    {{-- HMT Tampilkan time left --}}
+                    <div>
+                        <input type="checkbox"
+                            {{ boolval($settings[\App\Models\Setting::HMT_SHOW_TIME_LEFT]) ? 'checked' : '' }}
+                            name="{{ \App\Models\Setting::HMT_SHOW_TIME_LEFT }}" id="sisa-waktu">
+                        <label class="text-sm font-medium text-gray-700 mb-1" for="sisa-waktu">
+                            Tampilkan Sisa Waktu
+                        </label>
+                        <p class="text-xs text-gray-500 mt-1">Sembunyikan atau tampilkan sisa waktu pengerjaan</p>
+                    </div>
+
+                    {{-- HMT Tampilkan progres soal --}}
+                    <div>
+                        <input type="checkbox"
+                            {{ boolval($settings[\App\Models\Setting::HMT_SHOW_QUESTION_PROGRESS]) ? 'checked' : '' }}
+                            name="{{ \App\Models\Setting::HMT_SHOW_QUESTION_PROGRESS }}" id="progress-soal">
+                        <label class="text-sm font-medium text-gray-700 mb-1" for="progress-soal">
+                            Tampilkan Progress Soal
+                        </label>
+                        <p class="text-xs text-gray-500 mt-1">Sembunyikan atau tampilkan progress pengerjaan pertanyaan</p>
+                    </div>
+
                     <!-- Deskripsi -->
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">

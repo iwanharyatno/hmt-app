@@ -137,10 +137,12 @@
             <!-- ======================= -->
             <template x-if="stage === Number('{{ count($examples) + 1 }}') && currentQuestion">
                 <div class="bg-white rounded-2xl shadow-md p-6 mb-8">
-                    <h2 class="text-lg text-center font-semibold text-gray-800 mb-4 flex items-center gap-2">
-                        <i class="fas fa-puzzle-piece text-orange-600"></i>
-                        Pertanyaan <span x-text="currentIndex + 1"></span> dari <span x-text="questions.length"></span>
-                    </h2>
+                    @if (intval($settings[\App\Models\Setting::HMT_SHOW_QUESTION_PROGRESS]))
+                        <h2 class="text-lg text-center font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                            <i class="fas fa-puzzle-piece text-orange-600"></i>
+                            Pertanyaan <span x-text="currentIndex + 1"></span> dari <span x-text="questions.length"></span>
+                        </h2>
+                    @endif
 
                     <div class="flex justify-center mb-6">
                         <img :src="currentQuestion.question_path" alt="Soal HMT" class="rounded-lg shadow max-h-80">
@@ -159,12 +161,14 @@
                         </template>
                     </div>
 
-                    <div class="flex justify-center items-center" x-show="currentQuestion">
-                        <div class="text-sm text-gray-600 flex items-center gap-2">
-                            <i class="fas fa-clock text-orange-500"></i>
-                            Sisa waktu: <span class="font-semibold" x-text="timeLeft + ' detik'"></span>
+                    @if (intval($settings[\App\Models\Setting::HMT_SHOW_TIME_LEFT]))
+                        <div class="flex justify-center items-center" x-show="currentQuestion">
+                            <div class="text-sm text-gray-600 flex items-center gap-2">
+                                <i class="fas fa-clock text-orange-500"></i>
+                                Sisa waktu: <span class="font-semibold" x-text="timeLeft + ' detik'"></span>
+                            </div>
                         </div>
-                    </div>
+                    @endif
                 </div>
             </template>
 
@@ -245,6 +249,9 @@
                                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
                                 'Content-Type': 'application/json',
                             },
+                            body: JSON.stringify({
+                                started_at: new Date(),
+                            }),
                         });
 
                         const data = await response.json();
@@ -277,14 +284,16 @@
                             this.showAnswers = true;
                         }
                         if (this.timeLeft <= 0) {
+                            if (this.selectedAnswer == null) this.submitAnswer(this.currentQuestion.id, null, true);
                             this.nextQuestion();
                         }
                     }, 1000);
                 },
 
-                async submitAnswer(questionId, answerIndex) {
+                async submitAnswer(questionId, answerIndex, skipAnswered) {
                     if (!this.sessionId) return Swal.fire('Error', 'Session belum dimulai.', 'error');
                     this.selectedAnswer = answerIndex;
+                    const answeredAt = !skipAnswered ? new Date() : null;
 
                     try {
                         const result = await fetch("{{ route('quiz.hmt.answer') }}", {
@@ -297,6 +306,7 @@
                                 session_id: this.sessionId,
                                 question_id: questionId,
                                 answer_index: answerIndex,
+                                answered_at: answeredAt,
                             })
                         });
                         const res = await result.json();
@@ -325,8 +335,9 @@
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
-                                session_id: this.sessionId
-                            })
+                                session_id: this.sessionId,
+                                finished_at: new Date(),
+                            }),
                         });
                     } catch (err) {
                         console.error(err);

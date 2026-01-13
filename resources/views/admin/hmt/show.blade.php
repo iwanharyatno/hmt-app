@@ -36,13 +36,13 @@
                 <tr>
                     <th class="border border-gray-200 text-left p-4">Tanggal Mulai</th>
                     <td class="border border-gray-200 p-4">
-                        {{ $session->started_at ? $session->started_at->format('d M Y, H:i:s') : '-' }}
+                        {{ $session->started_at ? $session->started_at->format('d M Y, H:i:s.v') : '-' }}
                     </td>
                 </tr>
                 <tr>
                     <th class="border border-gray-200 text-left p-4">Tanggal Selesai</th>
                     <td class="border border-gray-200 p-4">
-                        {{ $session->finished_at ? $session->finished_at->format('d M Y, H:i:s') : '-' }}
+                        {{ $session->finished_at ? $session->finished_at->format('d M Y, H:i:s.v') : '-' }}
                     </td>
                 </tr>
                 <tr>
@@ -89,7 +89,7 @@
                                     <span class="text-gray-400 italic">Tidak ada gambar</span>
                                 @endif
                                 @php
-                                    $jawaban = $q->answer_index == $q->question->correct_index ? 'BENAR' : 'SALAH';
+                                    $jawaban = $q->answer_index && $q->answer_index == $q->question->correct_index ? 'BENAR' : 'SALAH';
                                 @endphp
                                 <p class="{{ $jawaban == 'BENAR' ? 'text-green-600' : 'text-yellow-600' }}">
                                     {{-- {{ $q->answer_index }} --}}
@@ -99,7 +99,7 @@
 
                             <!-- Timestamp -->
                             <td class="py-3 px-4">
-                                {{ $q->answered_at ? $q->answered_at->format('H:i:s') : '-' }}
+                                {{ $q->answered_at ? $q->answered_at->format('H:i:s.v') : '-' }}
                             </td>
                         </tr>
                     @endforeach
