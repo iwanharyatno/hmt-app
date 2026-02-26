@@ -33,6 +33,7 @@ docker exec -it $APP_CONTAINER php artisan migrate --force || true
 docker exec -it $APP_CONTAINER php artisan config:cache
 docker exec -it $APP_CONTAINER php artisan route:cache
 docker exec -it $APP_CONTAINER php artisan view:cache
+docker exec -it $APP_CONTAINER php artisan storage:link
 
 echo "✅ Deployment complete!"
 docker ps --filter "name=$APP_CONTAINER"
