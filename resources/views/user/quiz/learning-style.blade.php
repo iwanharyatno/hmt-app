@@ -16,25 +16,25 @@
             <!-- PREFACE / INTRODUCTION PAGE -->
             <!-- =========================== -->
             <template x-if="showPreface">
-                <div class="bg-white rounded-2xl shadow-md p-8 border border-gray-100 text-center">
-                    <h1 class="text-3xl font-bold text-orange-700 mb-4">
-                        🧠 Kuis Learning Style
+                <div class="bg-white rounded-2xl shadow-md p-8 border border-gray-100">
+                    <h1 class="text-3xl font-bold text-orange-700 mb-4 text-center">
+                        Asessmen Profil Gaya Belajar Felder-Silverman Learning Style Model (FSLSM)
                     </h1>
 
                     <!-- Petunjuk / Deskripsi -->
                     <div class="text-gray-700 text-left prose max-w-none mb-6 custom-trix-content" x-html="lsDescription"></div>
 
                     <!-- Checkbox & Privacy Modal Trigger -->
-                    <div class="flex flex-col items-center gap-4 mt-6">
-                        <div class="flex items-center gap-2">
+                    <div class="flex flex-col gap-4 mt-6">
+                        <div class="flex gap-2">
                             <input type="checkbox" id="agreePrivacy" x-model="privacyAgreed"
                                 class="w-4 h-4 text-orange-600 border-gray-300 rounded focus:ring-orange-500">
                             <label for="agreePrivacy" class="text-gray-700 text-sm">
-                                Saya telah membaca dan menyetujui
-                                <button type="button" @click="showPrivacy = true"
+                                Saya mengerti instruksi di atas. Saya bersedia mengisi kuisioner ini dengan jujur dan spontan sesuai keadaan saya yang sebenarnya.
+                                {{-- <button type="button" @click="showPrivacy = true"
                                     class="text-orange-600 font-medium underline hover:text-orange-800">
                                     Kebijakan Privasi
-                                </button>
+                                </button> --}}
                             </label>
                         </div>
 

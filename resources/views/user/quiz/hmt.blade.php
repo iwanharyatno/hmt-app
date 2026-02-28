@@ -17,17 +17,16 @@
 
                     <!-- Privacy Agreement -->
                     <div class="mt-6">
-                        <button type="button" @click="showPrivacy = true"
+                        {{-- <button type="button" @click="showPrivacy = true"
                             class="text-orange-600 underline text-sm hover:text-orange-700 transition">
                             Lihat Kebijakan Privasi
-                        </button>
+                        </button> --}}
 
                         <div class="flex items-center mt-3 gap-2">
                             <input type="checkbox" id="agreePrivacy" x-model="privacyAgreed"
                                 class="rounded text-orange-600">
                             <label for="agreePrivacy" class="text-sm text-gray-700">
-                                Saya telah membaca dan menyetujui <span class="text-orange-600 font-medium">Kebijakan
-                                    Privasi</span>.
+                                Saya telah membaca, memahami instruksi di atas, dan siap untuk memulai perekaman.
                             </label>
                         </div>
                     </div>
