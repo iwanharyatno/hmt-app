@@ -171,11 +171,29 @@ class HmtController extends Controller
         return back();
     }
 
-    public function history()
+    public function history(Request $request)
     {
+        $request->validate([
+            'search' => 'nullable|string|max:100',
+            'started_from' => 'nullable|date',
+            'started_to' => 'nullable|date|after_or_equal:started_from',
+        ]);
+
         $sessions = \App\Models\HmtSession::with('user')
+            ->when($request->filled('search'), function ($query) use ($request) {
+                $query->whereHas('user', function ($uq) use ($request) {
+                    $uq->where('name', 'like', '%' . $request->search . '%');
+                });
+            })
+            ->when($request->filled('started_from'), function ($query) use ($request) {
+                $query->where('started_at', '>=', \Carbon\Carbon::parse($request->started_from)->startOfDay());
+            })
+            ->when($request->filled('started_to'), function ($query) use ($request) {
+                $query->where('started_at', '<=', \Carbon\Carbon::parse($request->started_to)->endOfDay());
+            })
             ->latest()
-            ->paginate(10);
+            ->paginate(10)
+            ->withQueryString();
 
         return view('admin.hmt.history', compact('sessions'));
     }

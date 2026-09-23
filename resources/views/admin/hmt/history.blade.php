@@ -15,6 +15,35 @@
             </div>
         </div>
 
+        <form method="GET" action="{{ route('admin.hmt.history') }}"
+            class="mb-6 flex flex-col md:flex-row gap-3 bg-orange-50 p-4 rounded-lg border border-orange-100">
+            <div class="flex-1">
+                <label class="block text-xs font-semibold text-orange-700 mb-1">Nama Peserta</label>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama..."
+                    class="w-full rounded-lg border border-gray-300 text-sm px-3 py-2 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500">
+            </div>
+            <div class="md:w-44">
+                <label class="block text-xs font-semibold text-orange-700 mb-1">Mulai dari</label>
+                <input type="date" name="started_from" value="{{ request('started_from') }}"
+                    class="w-full rounded-lg border border-gray-300 text-sm px-3 py-2 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500">
+            </div>
+            <div class="md:w-44">
+                <label class="block text-xs font-semibold text-orange-700 mb-1">Mulai sampai</label>
+                <input type="date" name="started_to" value="{{ request('started_to') }}"
+                    class="w-full rounded-lg border border-gray-300 text-sm px-3 py-2 focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500">
+            </div>
+            <div class="flex gap-2 items-end">
+                <button type="submit"
+                    class="px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition text-sm h-[38px]">
+                    <i class="fas fa-search mr-1"></i> Cari
+                </button>
+                <a href="{{ route('admin.hmt.history') }}"
+                    class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition text-sm h-[38px] flex items-center">
+                    Reset
+                </a>
+            </div>
+        </form>
+
         <div class="overflow-x-auto rounded-lg border border-gray-200">
             <table class="w-full text-sm">
                 <thead class="bg-orange-100 text-orange-700">
@@ -29,7 +58,7 @@
                     </tr>
                 </thead>
                 <tbody class="text-gray-700">
-                    @foreach ($sessions as $i => $session)
+                    @forelse ($sessions as $i => $session)
                         <tr class="border-t hover:bg-orange-50">
                             <td class="py-3 px-4">
                                 {{ $loop->iteration + ($sessions->currentPage() - 1) * $sessions->perPage() }}</td>
@@ -60,13 +89,17 @@
                                 </a>
                             </td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="7" class="py-8 text-center text-gray-500">Tidak ada sesi sesuai filter.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>
 
         <div class="mt-4">
-            {{ $sessions->links() }}
+            {{ $sessions->withQueryString()->links() }}
         </div>
     </div>
 @endsection
