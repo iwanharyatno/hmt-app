@@ -1,31 +1,14 @@
-# ==========================
-# 1️⃣ Stage: Build Frontend (Vite)
-# ==========================
-FROM node:20-alpine AS frontend-builder
+FROM php:8.3-fpm-alpine
 
-WORKDIR /app
-
-# Copy package.json & lock file, install deps
-COPY package*.json ./
-RUN npm ci
-
-# Copy all source and build frontend assets
-COPY . .
-RUN npm run build
-
-
-# ==========================
-# 2️⃣ Stage: Build Backend (Composer + PHP-FPM)
-# ==========================
-FROM php:8.3-fpm-alpine AS backend
-
-# Install system dependencies
+# 1. Install System Dependencies, PHP Extensions, Node.js, dan NPM
 RUN apk add --no-cache \
     bash \
     zip \
     unzip \
     curl \
     git \
+    nodejs \
+    npm \
     libpng-dev \
     libjpeg-turbo-dev \
     libwebp-dev \
@@ -35,35 +18,33 @@ RUN apk add --no-cache \
     icu-dev \
     libzip-dev
 
-# Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
  && docker-php-ext-install -j$(nproc) gd pdo_mysql mbstring exif pcntl bcmath intl zip
 
-# Copy Composer binary
+# Copy Composer binary dari official image
 COPY --from=composer:2.7 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-# Copy *seluruh* source code dulu
+# 2. Copy seluruh source code project ke dalam container
 COPY . .
 
-# Copy built assets dari Node build stage
-COPY --from=frontend-builder /app/public/build ./public/build
-
-# Install production dependencies
+# 3. Install PHP Dependencies (Composer) terlebih dahulu
+# Agar folder vendor dan view pagination Laravel tersedia untuk di-scan oleh Tailwind
 RUN composer install --no-dev --no-interaction --optimize-autoloader --no-progress
 
-# Generate Laravel cache files untuk optimize runtime
+# 4. Install Node Dependencies & Build Asset Vite (Tailwind CSS)
+RUN npm ci && npm run build
+
+# 5. Generate Laravel cache untuk optimasi runtime
 RUN php artisan config:cache && php artisan route:cache && php artisan view:cache || true
 
-# Set file ownership & permission
-RUN chown -R www-data:www-data storage bootstrap/cache
+# 6. Set Hak Akses (Ownership & Permissions) untuk storage dan bootstrap/cache
+RUN chown -R www-data:www-data storage bootstrap/cache \
+ && chmod -R 775 storage bootstrap/cache
 
-# Re-run autoload to ensure vendor exists
-RUN composer dump-autoload --optimize
-
-# Expose PHP-FPM port
+# Expose port PHP-FPM
 EXPOSE 9000
 
-# Start PHP-FPM
+# Jalankan PHP-FPM sebagai proses utama container
 CMD ["php-fpm"]
