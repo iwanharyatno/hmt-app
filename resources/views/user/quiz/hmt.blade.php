@@ -211,6 +211,15 @@
     </div>
 
     <script>
+        function toLocalISOString(date) {
+            const offset = date.getTimezoneOffset();
+            // Shift the date by the timezone offset minutes converted to milliseconds
+            const localDate = new Date(date.getTime() - (offset * 60 * 1000));
+            
+            // Extract the base ISO string and drop the trailing UTC "Z"
+            return localDate.toISOString().slice(0, -1); 
+        }
+
         function quiz(questions, hmtDesc, hmtPrivacy) {
             return {
                 stage: 0,
@@ -249,7 +258,7 @@
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
-                                started_at: new Date(),
+                                started_at: toLocalISOString(new Date()),
                             }),
                         });
 
@@ -292,7 +301,7 @@
                 async submitAnswer(questionId, answerIndex, skipAnswered) {
                     if (!this.sessionId) return Swal.fire('Error', 'Session belum dimulai.', 'error');
                     this.selectedAnswer = answerIndex;
-                    const answeredAt = !skipAnswered ? new Date() : null;
+                    const answeredAt = !skipAnswered ? toLocalISOString(new Date()) : null;
 
                     try {
                         const result = await fetch("{{ route('quiz.hmt.answer') }}", {
@@ -335,7 +344,7 @@
                             },
                             body: JSON.stringify({
                                 session_id: this.sessionId,
-                                finished_at: new Date(),
+                                finished_at: toLocalISOString(new Date()),
                             }),
                         });
                     } catch (err) {
