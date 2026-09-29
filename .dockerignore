@@ -4,6 +4,7 @@
 /storage/framework/sessions/*
 /storage/framework/cache/*
 /storage/framework/views/*
+/public/build
 .env
 .git
 .gitignore
