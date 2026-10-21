@@ -12,6 +12,10 @@
                     class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition text-center">
                     <i class="fas fa-file-csv"></i> Export Semua Jawaban (CSV)
                 </a>
+                <a href="{{ route('admin.hmt.histories.export-participants') }}"
+                    class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-center">
+                    <i class="fas fa-users"></i> Export Data Peserta (XLSX)
+                </a>
             </div>
         </div>
 
@@ -50,6 +54,7 @@
                     <tr>
                         <th class="py-3 px-4 text-left">No</th>
                         <th class="py-3 px-4 text-left">User</th>
+                        <th class="py-3 px-4 text-left">Telepon</th>
                         <th class="py-3 px-4 text-left">Percobaan</th>
                         <th class="py-3 px-4 text-left">Mulai</th>
                         <th class="py-3 px-4 text-left">Selesai</th>
@@ -63,6 +68,7 @@
                             <td class="py-3 px-4">
                                 {{ $loop->iteration + ($sessions->currentPage() - 1) * $sessions->perPage() }}</td>
                             <td class="py-3 px-4">{{ $session->user->name ?? '-' }}</td>
+                            <td class="py-3 px-4">{{ $session->user->phone ?? '-' }}</td>
                             <td class="py-3 px-4">{{ $session->attempts ?? '-' }}</td>
                             <td class="py-3 px-4">{{ $session->started_at?->format('d M Y H:i') ?? '-' }}</td>
                             <td class="py-3 px-4">{{ $session->finished_at?->format('d M Y H:i') ?? '-' }}</td>

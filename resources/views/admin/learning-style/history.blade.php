@@ -8,10 +8,16 @@
     <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-6 gap-4">
         <h1 class="text-2xl font-bold text-orange-600">History Learning Style Volunteer</h1>
 
-        <a href="{{ route('admin.learning-style.export') }}"
-            class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition text-center">
-            <i class="fas fa-file-csv"></i> Export Semua Hasil (CSV)
-        </a>
+        <div class="flex gap-2">
+            <a href="{{ route('admin.learning-style.export') }}"
+                class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition text-center">
+                <i class="fas fa-file-csv"></i> Export Semua Hasil (CSV)
+            </a>
+            <a href="{{ route('admin.learning-style.export-participants') }}"
+                class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-center">
+                <i class="fas fa-users"></i> Export Data Peserta (XLSX)
+            </a>
+        </div>
     </div>
 
     <!-- Table -->

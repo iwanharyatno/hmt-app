@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Exports\LearningStyleResultsExport;
+use App\Exports\ParticipantUsersExport;
 use App\Http\Controllers\Controller;
 use App\Models\LearningStyleQuestion;
 use App\Models\LearningStyleResult;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
@@ -178,5 +180,13 @@ class LearningStyleController extends Controller
     {
         $filename = 'learning_style_results_' . now()->format('Ymd_His') . '.xlsx';
         return Excel::download(new LearningStyleResultsExport, $filename);
+    }
+
+    public function exportParticipants()
+    {
+        $users = User::whereHas('learningStyleResults')->orderBy('name')->get();
+        $filename = 'learning_style_participants_' . now()->format('Ymd_His') . '.xlsx';
+
+        return Excel::download(new ParticipantUsersExport($users), $filename, \Maatwebsite\Excel\Excel::XLSX);
     }
 }

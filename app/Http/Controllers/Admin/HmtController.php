@@ -9,7 +9,9 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Exports\HmtHistoriesExport;
 use App\Exports\HmtHistorySingleExport;
+use App\Exports\ParticipantUsersExport;
 use App\Models\HmtSession;
+use App\Models\User;
 use Maatwebsite\Excel\Facades\Excel;
 
 class HmtController extends Controller
@@ -210,6 +212,14 @@ class HmtController extends Controller
         // Ekspor hanya sesi terakhir dari setiap user
         $filename = 'hmt_histories_latest_sessions_' . now()->format('Ymd_His') . '.csv';
         return Excel::download(new HmtHistoriesExport, $filename, \Maatwebsite\Excel\Excel::CSV);
+    }
+
+    public function exportParticipantsXlsx()
+    {
+        $users = User::whereHas('hmtSessions')->orderBy('name')->get();
+        $filename = 'hmt_participants_' . now()->format('Ymd_His') . '.xlsx';
+
+        return Excel::download(new ParticipantUsersExport($users), $filename, \Maatwebsite\Excel\Excel::XLSX);
     }
 
     public function exportHistoriesSingleCsv($sessionId)

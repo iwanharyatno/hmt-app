@@ -57,4 +57,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(LearningStyleResult::class);
     }
+
+    public function hmtSessions()
+    {
+        return $this->hasMany(HmtSession::class);
+    }
 }

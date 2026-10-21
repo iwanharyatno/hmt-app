@@ -42,10 +42,14 @@ Route::prefix('admin')->middleware(['auth', EnsureUserIsAdmin::class])->group(fu
     Route::delete('learning-style/delete/{id}', [LearningStyleController::class, 'destroy'])->name('admin.learning-style.destroy');
     Route::get('learning-style/history', [LearningStyleController::class, 'history'])->name('admin.learning-style.history');
     Route::get('learning-style/export', [LearningStyleController::class, 'export'])->name('admin.learning-style.export');
+    Route::get('learning-style/export-participants', [LearningStyleController::class, 'exportParticipants'])
+        ->name('admin.learning-style.export-participants');
 
     Route::resource('hmt', HmtController::class)->except(['show'])->names('admin.hmt');
 
     Route::get('hmt/histories', [HmtController::class, 'history'])->name('admin.hmt.history');
+    Route::get('hmt/histories/export-participants', [HmtController::class, 'exportParticipantsXlsx'])
+        ->name('admin.hmt.histories.export-participants');
     Route::get('hmt/histories/show/{id}', [HmtController::class, 'showAnswer'])->name('admin.hmt.histories.show');
     Route::get('hmt/histories/export', [HmtController::class, 'exportHistoriesCsv'])
         ->name('admin.hmt.histories.export');
