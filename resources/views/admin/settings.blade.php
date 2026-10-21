@@ -8,12 +8,22 @@
         <div class="flex flex-col sm:flex-row justify-between sm:items-center mb-6 gap-4">
             <h1 class="text-2xl font-bold text-orange-600">Pengaturan</h1>
             <div class="flex gap-2">
+                <a href="{{ route('admin.settings.export-users') }}"
+                    class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-center">
+                    <i class="fas fa-file-excel"></i> Export Data Users (XLSX)
+                </a>
                 <button form="settingsForm"
                     class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition text-center">
                     <i class="fas fa-save"></i> Simpan Pengaturan
                 </button>
             </div>
         </div>
+
+        <p class="text-xs text-gray-500 mb-4">
+            Export berisi seluruh kolom tabel <span class="font-mono">users</span>, kecuali
+            <span class="font-mono">email_verified_at</span>, <span class="font-mono">password</span>, dan
+            <span class="font-mono">remember_token</span>.
+        </p>
 
         @session('success')
             <div class="bg-green-200/50 border border-green-600 rounded-lg p-4 mb-4">

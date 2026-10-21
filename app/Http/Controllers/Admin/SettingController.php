@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\UsersExport;
 use App\Models\Setting;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SettingController extends Controller
 {
@@ -50,6 +52,13 @@ class SettingController extends Controller
         }
 
         return redirect()->back()->with('success', 'Pengaturan berhasil disimpan.');
+    }
+
+    public function exportUsers()
+    {
+        $filename = 'users_export_' . now()->format('Ymd_His') . '.xlsx';
+
+        return Excel::download(new UsersExport, $filename, \Maatwebsite\Excel\Excel::XLSX);
     }
 }
 

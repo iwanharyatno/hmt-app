@@ -58,6 +58,8 @@ Route::prefix('admin')->middleware(['auth', EnsureUserIsAdmin::class])->group(fu
 
     Route::get('settings', [SettingController::class, 'index'])->name('admin.settings.index');
     Route::put('settings', [SettingController::class, 'update'])->name('admin.settings.update');
+    Route::get('settings/export-users', [SettingController::class, 'exportUsers'])
+        ->name('admin.settings.export-users');
 });
 
 Route::get('/login', [AuthController::class, 'login'])->name('login');
