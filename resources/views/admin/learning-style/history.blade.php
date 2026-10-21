@@ -27,6 +27,7 @@
                 <tr>
                     <th class="py-3 px-4 text-left">User Id</th>
                     <th class="py-3 px-4 text-left">User</th>
+                    <th class="py-3 px-4 text-left">Telepon</th>
                     <th class="py-3 px-4 text-left">Email</th>
                     <th class="py-3 px-4 text-left">Pemrosesan</th>
                     <th class="py-3 px-4 text-left">Persepsi</th>
@@ -40,6 +41,7 @@
                     <tr class="border-t hover:bg-orange-50">
                         <td class="py-3 px-4">{{ $p['user']->id }}</td>
                         <td class="py-3 px-4">{{ $p['user']->name }}</td>
+                        <td class="py-3 px-4">{{ $p['user']->phone }}</td>
                         <td class="py-3 px-4">{{ $p['user']->email }}</td>
                         <td class="py-3 px-4">{{ $p['mapped']['Pemrosesan'] }}</td>
                         <td class="py-3 px-4">{{ $p['mapped']['Persepsi'] }}</td>
